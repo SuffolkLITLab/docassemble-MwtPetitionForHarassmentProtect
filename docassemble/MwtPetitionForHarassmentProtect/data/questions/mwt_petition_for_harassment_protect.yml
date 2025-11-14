@@ -75,6 +75,15 @@ code: |
 objects:
   - users: ALPeopleList.using(ask_number=True,target_number=1)
   - other_parties: ALPeopleList.using(ask_number=True,target_number=1)
+  - protected: ALPeopleList.using(ask_number=True,target_number=1)
+  - vul_person: ALPeopleList.using(ask_number=True,target_number=1)
+  - cases: DAList.using(object_type=DAObject)
+  - minor: ALPeopleList.using(ask_number=True,target_number=1)
+  - household: ALPeopleList.using(ask_number=True,target_number=1)
+  - defendants: ALPeopleList.using(ask_number=True,target_number=1)
+  - confidential: ALPeopleList.using(ask_number=True,target_number=1)
+  - filer: ALPeopleList.using(ask_number=True,target_number=1)
+  - plaintiffs: ALPeopleList.using(ask_number=True,target_number=1)
 ---
 sections:
   - review_mwt_petition_for_harassment_protect: Review your answers
@@ -82,7 +91,7 @@ sections:
 #################### Interview order #####################
 comment: |
   Controls order and branching logic for questions specific to this form
-id: interview_order_mwt_petition_for_harassment_protect
+id: interview_order_mwt_petition_for_harassment
 code: |
   # Set the allowed courts for this interview
   allowed_courts = ['MWT Court', 'Other']
@@ -102,7 +111,6 @@ code: |
   is_confidential_address
   set_progress(22)
   is_vulnerable_adult
-  defendants[0].work_phone_number
   is_defendant_need_interpreter
   disability_or_injury_description
   is_assault_with_weapons
@@ -132,7 +140,7 @@ code: |
   set_progress(77)
   plaintiffs[0].birthdate
   defendants[0].birthdate
-  interview_order_mwt_petition_for_harassment_protect = True
+  interview_order_mwt_petition_for_harassment = True
 ---
 ###################### Main order ######################
 comment: |
@@ -142,7 +150,7 @@ mandatory: True
 code: |
   al_intro_screen
   mwt_petition_for_harassment_protect_intro
-  interview_order_mwt_petition_for_harassment_protect
+  interview_order_mwt_petition_for_harassment
   signature_date
   # Store anonymous data for analytics / statistics
   store_variables_snapshot(
@@ -263,7 +271,7 @@ subquestion: |
   List any other court cases or other restraining, protection or no-contact orders involving Plaintiff, Defendant, minor child(ren) or vulnerable adults)
 fields:
   - "Court or County": cases[0].court_or_county
-  - "Case Name": cases[0].name.first
+  - "Case Name": cases[0].name
   - "Case Number": cases[0].number
     required: False
 ---
@@ -518,18 +526,18 @@ fields:
   - "First Name": confidential[0].name.first
     required: False
 ---
-id: Filer Information
-question: |
-  Filer Information
-subquestion: |
-  If you filed for someone else, list your name, phone number, and address
-fields:
-  - "Address (Street, City, State, Zip Code)": filer[0].address.address
-    required: False
-  - "First Name": filer[0].name.first
-  - "Phone Number": filer[0].phone_number
-    required: False
----
+#id: Filer Information
+#question: |
+#  Filer Information
+#subquestion: |
+#  If you filed for someone else, list your name, phone number, and address
+#fields:
+#  - "Address (Street, City, State, Zip Code)": filer[0].address.address
+#    required: False
+#  - "First Name": filer[0].name.first
+#  - "Phone Number": filer[0].phone_number
+#    required: False
+#---
 id: Minor Children
 question: |
   Minor Children
