@@ -98,13 +98,18 @@ code: |
   nav.set_section("review_mwt_petition_for_harassment_protect")
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
+  case_number
+  is_victim_of_harassment
+  protected[0].name.first
+  protected[0].eye_color
+  protected[0].phone_number
+  is_defendant_mashpee_employee
   protected[0].build
   is_protected_not_need_interpreter
   is_plaintiff_on_reservation
   vul_person[0].sex
   cases[0].court_or_county
   set_progress(11)
-  is_plaintiff
   other_restrained_locations
   additional_statement
   town_name
@@ -130,7 +135,6 @@ code: |
   household[0].name.first
   weapon_location_description
   defendants.gather()
-  case_number
   defendants[0].address.address
   set_progress(66)
   defendants[0].language
@@ -171,41 +175,214 @@ subquestion: |
   
   Before you get started, please gather:
   
-  1. 
-  1. 
-  1. 
+    1. Your full legal name, current address, phone number, and email address.
+    2. The Defendant’s full name, address (home, work, or other location), and any information that may help identify or locate them (such as phone number, employer, vehicle description, or social media profiles).
+    3. A clear description of what happened, including dates, times, and places of any harassment, threats, or incidents.
+    4. Names and contact information of any witnesses (if available).
+    5. Copies of any supporting evidence, such as text messages, emails, photos, social media posts, medical reports, or police reports
+    6. Information about any previous or current court cases involving you and the Defendant. You will be asked to upload copies of these documents if available.
+    7. If you are requesting the Defendant stay away from your home, workplace, or school, make sure you have those addresses ready.
+    8. If you are asking for financial compensation (such as for property damage or medical costs), have receipts or proof of expenses available.
   
   When you are finished, you will need to:
   
-  1. 
-  1.
+  1. Download and review the document
+  1. File the petition with MWT authorities
 
-  If you are a _____________, you can use this interview to ____________.
-
-  Most people take about 30 minutes to complete this interview.
+  Most people take about 1 hour and 30 minutes to complete this interview.
+---
+id: Case Information
+question: |
+  Case Information
+subquestion: |
+  Provide the case number if available and select options that apply
+fields:
+  - "Case Number": case_number
+    required: False
+  - "The \"'Unlawful Harassment\" took place within the boundaries of the MWT Reservation": is_events_on_reservation
+    datatype: yesno
+  - "MWT Prosecutor": is_prosecutor
+    datatype: yesno
 ---
 id: Plaintiff Information
 question: |
   Plaintiff Information
 subquestion: |
-  Information of the party to be protected
+  Select all options that apply
 fields:
-  - "Build": protected[0].build
-  - "First Name:": protected[0].name.first
-  - "Locations": protected[0].skintone
-  - "Height": protected[0].height
-  - "Hair Color": protected[0].hair_color
-  - "Male": is_protected_male
+  - "I am the victim of 'Unlawful Harassment” committed by Defendant": is_victim_of_harassment
     datatype: yesno
-  - "Weight": protected[0].weight
-  - "Eye Color": protected[0].eye_color
-  - "Address (Street, City, State, Zip Code)": protected[0].address.address
-  - "Phone Number": protected[0].phone_number
-  - "Female": is_protected_female
+  - "I am the parent or guardian, family member or household member of child(ren) under the age of 18 or vulnerable adult and seek to restrain a person age 18 years of age or over from contact with child(ren) or vulnerable adult": is_guardian_of_victim
     datatype: yesno
+  - "I am a member of the Mashpee Wampanoag Tribe.": is_plaintiff_member_of_mashpee
+    datatype: yesno
+  - "I am a member of another Federally recognized Indian Tribe": is_plaintiff_member_of_other_tribe
+    datatype: yesno
+  - "I am an employee of the Mashpee Wampanoag Tribe": is_plaintiff_mashpee_employee
+    datatype: yesno
+  - "I live within the boundaries of the MWT Indian Reservation.": is_plaintiff_on_reservation
+    datatype: yesno
+---
+code: |
+  is_plaintiff = is_victim_of_harassment
+---
+id: Defendant Information
+question: |
+  Defendant Information
+subquestion: |
+  Select all options that apply to the defendant
+fields:
+  - "Defendant is an employee of the Mashpee Wampanoag Tribe": is_defendant_mashpee_employee
+    datatype: yesno
+  - "Defendant is a member of the Mashpee Wampanoag Tribe": is_defendant_member_of_mashpee
+    datatype: yesno
+  - "The Defendant's \"'Unlawful Harassment\" took place within the boundaries of the MWT Reservation": is_events_on_reservation
+    datatype: yesno
+  - "Defendant lives within the boundaries of the MWT Indian Reservation": is_defendant_on_reservation
+    datatype: yesno
+---
+id: Protected Person Information
+question: |
+  Protected Person Information
+subquestion: |
+  Provide identifying information for the person to be protected.
+fields:
+#  - "I am not the person to be protected": is_plaintiff
+#    datatype: yesno
+#  - "Protected Person First Name": protected[0].name.first
+#    required: False
+#    show if:
+#      code: |
+#        not is_plaintiff
+#  - "Protected Person Last Name": protected[0].name.last
+#    required: False
+#    show if:
+#      code: |
+#        not is_plaintiff
   - "Date of Birth": protected[0].birthdate
+    required: False
     datatype: date
+  - "Eye Color": protected[0].eye_color
+    required: False
+    choices:
+      - Amber: Amber
+      - Black: Black
+      - Blue: Blue
+      - Brown: Brown
+      - Gray: Gray
+      - Green: Green
+      - Hazel: Hazel
+      - Red: Red
+      - Other/unknown: other/unknown
+  - Other Eye Color: protected_eye_color
+    required: False
+    show if:
+      variable: protected[0].eye_color
+      is: 'other/unknown'
+    maxlength: 9
+  - "Hair Color": protected[0].hair_color
+    required: False
+    choices:
+      - Brown: Brown
+      - Blond: Blond
+      - Black: Black
+      - Gray: Gray
+      - Red: Red
+      - White: White
+      - Other: other
+  - Other hair color: protected_hair_color
+    required: False
+    show if:
+      variable: protected[0].hair_color
+      is: "other"
+    maxlength: 9     
   - "Race": protected[0].race
+    required: False
+    choices:
+      - White: White
+      - Black or African American: Black
+      - American Indian or Alaska Native: Native Amer.
+      - Asian: Asian
+      - Native Hawaiian or Other Pacific Islander: Pacific Is.
+      - Hispanic or Latino/Latina/Latinx: Hispanic
+      - Multiracial: Multiracial
+      - Other: other
+  - Other Race: protected_race_other
+    required: False
+    show if: 
+      variable: protected[0].race
+      is: other
+    maxlength: 9 
+  - "Height": protected[0].height
+    required: False
+    hint: e.g., 5 foot 10 inches
+  - "Weight": protected[0].weight
+    required: False
+    hint: e.g., 200lbs
+  - "Body Type or Build": protected[0].build
+    required: False
+    help: |
+      Select all that might be helpful to describe the person
+    datatype: checkboxes
+    choices:
+      - Small: Small
+      - Medium: Medium
+      - Large: Large
+      - Athletic: Athletic
+      - Muscular: Muscular
+      - Fat: Fat
+      - Thin: Thin
+  - "Skintone": protected[0].skintone
+    required: False
+  - "Gender": protected_gender
+    datatype: radio
+    choices:
+      - "Female": Female
+      - "Male": Male
+---
+code: |
+  protected[0].race = protected[0].race if not protected[0].race == 'other' else protected_race_other
+  protected[0].eye_color = protected[0].eye_color if not protected[0].eye_color == 'other/unknown' else protected_eye_color
+  protected[0].hair_color = protected[0].hair_color if not protected[0].hair_color == 'other' else protected_hair_color
+  if protected_gender == "Female":
+    is_protected_female = True
+    is_protected_male = False
+  if protected_gender == "Male":
+    is_protected_female = False
+    is_protected_male = True
+---
+id: Plaintiff Contact Information
+question: |
+  Plaintiff Information
+subquestion: |
+  Contact details of the party to be protected
+fields:
+  - code: |
+      protected[0].address_fields()
+  - "Phone Number": protected[0].phone_number
+#---
+#id: Plaintiff Information
+#question: |
+#  Plaintiff Information
+#subquestion: |
+#  Information of the party to be protected
+#fields:
+#  - "Build": protected[0].build
+#  - "First Name:": protected[0].name.first
+#  - "Locations": protected[0].skintone
+#  - "Height": protected[0].height
+#  - "Hair Color": protected[0].hair_color
+#  - "Male": is_protected_male
+#    datatype: yesno
+#  - "Weight": protected[0].weight
+#  - "Eye Color": protected[0].eye_color
+#  - "Address (Street, City, State, Zip Code)": protected[0].address.address
+#  - "Phone Number": protected[0].phone_number
+#  - "Female": is_protected_female
+#    datatype: yesno
+#  - "Date of Birth": protected[0].birthdate
+#    datatype: date
+#  - "Race": protected[0].race
 ---
 id: Need for an Interpreter
 question: |
@@ -219,34 +396,34 @@ fields:
     datatype: yesno
   - "Language": protected[0].language
     required: False
----
-id: Petition Information
-question: |
-  Petition Information
-subquestion: |
-  Select all that apply
-fields:
-  - "I live within the boundaries of the MWT Indian Reservation.": is_plaintiff_on_reservation
-    datatype: yesno
-  - "I am a member of a Federally recognized Indian Tribe": is_plaintiff_member_of_other_tribe
-    datatype: yesno
-  - "The \"'Unlawful Harassment\" took place within the boundaries of the MWT Reservation": is_events_on_reservation
-    datatype: yesno
-  - "MWT Prosecutor": is_prosecutor
-    datatype: yesno
-  - "I am a member of the Mashpee Wampanoag Tribe.": is_plaintiff_member_of_mashpee
-    datatype: yesno
-  - "I am the victim of 'Unlawful Harassment” committed by Defendant. as described in the statement": is_victim_of_harassment
-    datatype: yesno
-  - "Plaintiff is an employee of the Mashpee Wampanoag Tribe": is_plaintiff_mashpee_employee
-    datatype: yesno
-  - "Defendant is an employee of the Mashpee Wampanoag Tribe": is_defendant_mashpee_employee
-    datatype: yesno
-  - "Defendant is a member of the Mashpee Wampanoag Tribe": is_defendant_member_of_mashpee
-    datatype: yesno
-  - "I am the parent or guardian, family member or household member of child(ren) under the age of 18 or vulnerable adult and seek to restrain a person age 18 years of age or over from contact with child(ren) or vulnerable adult because contact is detrimental, as described in the statement below": is_guardian_of_victim
-    datatype: yesno
-  - "Defendant lives within the boundaries of the MWT Indian Reservation": is_defendant_on_reservation
+#---
+#id: Petition Information
+#question: |
+#  Petition Information
+#subquestion: |
+#  Select all that apply
+#fields:
+#  - "I live within the boundaries of the MWT Indian Reservation.": is_plaintiff_on_reservation
+#    datatype: yesno
+#  - "I am a member of a Federally recognized Indian Tribe": is_plaintiff_member_of_other_tribe
+#    datatype: yesno
+#  - "The \"'Unlawful Harassment\" took place within the boundaries of the MWT Reservation": is_events_on_reservation
+#    datatype: yesno
+#  - "MWT Prosecutor": is_prosecutor
+#    datatype: yesno
+#  - "I am a member of the Mashpee Wampanoag Tribe.": is_plaintiff_member_of_mashpee
+#    datatype: yesno
+#  - "I am the victim of 'Unlawful Harassment” committed by Defendant. as described in the #statement": is_victim_of_harassment
+#    datatype: yesno
+#  - "Plaintiff is an employee of the Mashpee Wampanoag Tribe": is_plaintiff_mashpee_employee
+#    datatype: yesno
+#  - "Defendant is an employee of the Mashpee Wampanoag Tribe": is_defendant_mashpee_employee
+#    datatype: yesno
+#  - "Defendant is a member of the Mashpee Wampanoag Tribe": is_defendant_member_of_mashpee
+#    datatype: yesno
+#  - "I am the parent or guardian, family member or household member of child(ren) under the age of 18 or vulnerable adult and seek to restrain a person age 18 years of age or over from contact with child(ren) or vulnerable adult because contact is detrimental, as described in the statement below": is_guardian_of_victim
+#    datatype: yesno
+#  - "Defendant lives within the boundaries of the MWT Indian Reservation": is_defendant_on_reservation
 ---
 id: Identification of Minors and Vulnerable Adults
 question: |
@@ -281,8 +458,8 @@ question: |
 subquestion: |
   This order will restrain the defendant from making any contact; digital, by mail, or in person, with:
 fields:
-  - "I am the plaintiff": is_plaintiff
-    datatype: yesno
+#  - "I am the plaintiff": is_plaintiff
+#    datatype: yesno
   - "Protection is a minor or vulnerable adult": is_minors_or_vulnerable_adults
     datatype: yesno
 ---
