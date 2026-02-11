@@ -10,10 +10,12 @@ metadata:
     Protection Petition
   description: |-
     This interview helps someone in Massachusetts ask the court for a protection order for harassment.
-  can_I_use_this_form: |
+  can_I_use_this_form: | 
     If you are a petitioner, you can use this interview to file a petition for a Harassment Protection Order.
   before_you_start: |
+    
     Before you get started, please gather:
+    
     1. Your full legal name, current address, phone number, and email address.
     2. The Defendant’s full name, address (home, work, or other location), and any information that may help identify or locate them (such as phone number, employer, vehicle description, or social media profiles).
     3. A clear description of what happened, including dates, times, and places of any harassment, threats, or incidents.
@@ -96,48 +98,36 @@ code: |
   nav.set_section("review_mwt_petition_for_harassment_protect")
   user_role = "plaintiff"
   user_ask_role = "plaintiff"
-  protected[0].build
-  is_protected_not_need_interpreter
-  is_plaintiff_on_reservation
-  vul_person[0].sex
-  cases[0].court_or_county
-  set_progress(11)
-  is_plaintiff
-  other_restrained_locations
-  additional_statement
-  town_name
-  is_confidential_address
-  set_progress(22)
-  is_vulnerable_adult
-  is_defendant_need_interpreter
-  disability_or_injury_description
-  is_assault_with_weapons
-  set_progress(33)
-  has_rifles
-  minor[0].birthdate
-  is_intimate_not_applicable
-  is_not_living_together
-  is_move_aware_not_applicable
-  set_progress(44)
-  is_defendant_aware_not_applicable
-  is_violent_not_applicable
-  confidential[0].phone_number
-  filer[0].address.address
-  minor[0].reside_with
-  set_progress(55)
-  household[0].name.first
-  weapon_location_description
-  defendants.gather()
   case_number
-  defendants[0].address.address
-  set_progress(66)
-  defendants[0].language
+  is_protection_for_minor
+  if not is_plaintiff:
+    filer[0].name.first
+  is_victim_of_harassment
+  set_progress(11)
   plaintiffs.gather()
-  defendants[0].phone_number
-  plaintiffs[0].mailing_address.address
-  set_progress(77)
-  plaintiffs[0].birthdate
+  protected[0].name.first
+  protected[0].eye_color
+  protected[0].phone_number
+  if is_minors_or_vulnerable_adults:
+    minor[0].name.first
+  set_progress(22)
+  defendants.gather()
+  is_defendant_mashpee_employee
   defendants[0].birthdate
+  defendants[0].driver_license_number
+  defendant_employer
+  set_progress(33)
+  impaired
+  has_rifles
+  is_vehicle
+  is_assault_with_weapons
+  set_progress(44)
+  cases[0].court_or_county
+  is_domestic_violence
+  statement_1
+  is_restrained_workplace
+  set_progress(55)
+  order_aware
   interview_order_mwt_petition_for_harassment = True
 ---
 ###################### Main order ######################
@@ -146,6 +136,7 @@ comment: |
   Delete mandatory: True to include in another interview
 mandatory: True
 code: |
+  al_intro_screen
   mwt_petition_for_harassment_protect_intro
   interview_order_mwt_petition_for_harassment
   signature_date
@@ -164,136 +155,478 @@ continue button field: mwt_petition_for_harassment_protect_intro
 question: |
   MWT Petition for Harassment Protection
 subquestion: |
-  This interview will help you ask the court for protection order for harassment.
+ 
+ This interview will help you ask the Tribal Court for a Harassment Protection Order. Answer the questions as best as you can. You do not have to be perfect. It is okay if you do not remember every detail.
+  Some questions may feel difficult. You may take breaks at any time and return when you feel ready.  
   
-    Before you get started, please gather:
-    
-  1. Your full legal name, current address, phone number, and email address.
-  
-    2. The Defendant’s full name, address (home, work, or other location), and any information that may help identify or locate them (such as phone number, employer, vehicle description, or social media profiles).
-    
-  3. A clear description of what happened, including dates, times, and places of any harassment, threats, or incidents.
-    
-  4. Names and contact information of any witnesses (if available).
+ Before You Begin: If you can, try to gather the information listed below. If you do not have everything, you can still continue. Share what you know.
    
-  5. Copies of any supporting evidence, such as text messages, emails, photos, social media posts, medical reports, or police reports
-    
-  6. Information about any previous or current court cases involving you and the Defendant. You will be asked to upload copies of these documents if available.
-    
-  7. If you are requesting the Defendant stay away from your home, workplace, or school, make sure you have those addresses ready.
-    
-  8. If you are asking for financial compensation (such as for property damage or medical costs), have receipts or proof of expenses available.
-  
-  When you are finished, you will need to:
-  
-  1. 
-  1.
+   1. Your full legal name and contact information, such as your address, phone number, and email.
+ 
+  2. The defendant’s name and any information that may help the court or Tribal Police identify or locate them, such as where they live or work, phone number, vehicle description, or social media accounts.
+ 
+  3. A description of what happened, including when and where the harassment, threats, or incidents took place.
+ 
+  4. Names and contact information of any witnesses, if you have them.
+ 
+  5. Any evidence that supports your request, such as text messages, emails, photos, social media posts, medical records, or police reports.
+ 
+  6. Information about any past or current court cases involving you and the defendant.
+ 
+  7. Addresses for places you want the defendant to stay away from, such as your home, workplace, or school.
+ 
+  8. Receipts or records of costs if you are asking for financial help related to damage or medical care.
 
-  If you are a _____________, you can use this interview to ____________.
+  It is okay if you do not have all of this information. Provide what you can. Most people take about 1 hour and 30 minutes to complete this interview.
 
-  Most people take about 30-45 minutes to complete this interview.
+  
+ When you are finished, you will need to:
+ 
+  1. Download and review the document
+ 
+  2. File the petition with MWT authorities
+
+---
+id: Case Information
+question: |
+  Case Information
+subquestion: |
+  Provide the case number if available and select options that apply
+fields:
+  - "Case Number": case_number
+    required: False
+  - "The \"'Unlawful Harassment\" took place within the boundaries of the MWT Reservation": is_events_on_reservation
+    datatype: yesno
+  - "MWT Prosecutor": is_prosecutor
+    datatype: yesno
+---
+id: Purpose Identification
+question: |
+  Purpose of Protection Order
+subquestion: |
+  Who is the protection order for?
+fields:
+  - "Select One": order_protected_identity
+    datatype: radio
+    required: True
+    choices:
+      - "I am seeking this order of protection for myself": Myself
+      - "I am filing this form on behalf of another person": Another
+  - "I am seeking  protection on behalf of a minor": is_protection_for_minor
+    datatype: yesno
+    show if:
+      variable: order_protected_identity
+      is: "Another"
+  - "This order will include additional minors and/or vulnerable adults": is_minors_or_vulnerable_adults
+    datatype: yesno
+---
+code: |
+  if order_protected_identity == "Myself":
+    is_plaintiff = True
+    is_protection_for_minor = False
+  elif order_protected_identity == "Another":
+    is_plaintiff = False
+---
+id: Filer Information
+question: |
+  Petition Filer Information
+subquestion: |
+  Provide identifying information for the person filing this petition on behalf of the plaintiff
+fields:
+  - "First Name": filer[0].name.first
+  - "Last Name": filer[0].name.last
+  - "Phone Number":  filer[0].phone_number
+  - code: |
+      filer[0].address_fields()
+---
+id: Vulnerable Person or Minor Involvement
+question: |
+  Minor or Vulnerable Person Involvement
+subquestion: |
+  Add information for any additional minors or vulnerable adults
+fields:
+  - "Does this protection order include additional minors?": includes_minors
+    datatype: yesno
+  - "First Name": minor[0].name.first
+    required: False
+    show if:
+      variable: includes_minors
+      is: True
+  - "Last Name": minor[0].name.last
+    required: False
+    show if:
+      variable: includes_minors
+      is: True
+  - "Sex": minor[0].sex
+    required: False
+    show if:
+      variable: includes_minors
+      is: True
+  - "Race": minor[0].ethnic
+    required: False
+    show if:
+      variable: includes_minors
+      is: True
+  - "Birthdate": minor[0].birthdate
+    required: False
+    show if:
+      variable: includes_minors
+      is: True
+  - "Who does the minor reside with?": minor[0].reside_with
+    required: False
+    show if:
+      variable: includes_minors
+      is: True
+  - "Does this protection order include vulnerable adults?": is_involves_vulnerable
+    datatype: yesno
+  - "First Name": vul_person[0].name.first
+    required: False
+    show if:
+      variable: is_involves_vulnerable
+      is: True
+  - "Last Name": vul_person[0].name.last
+    required: False
+    show if:
+      variable: is_involves_vulnerable
+      is: True
+  - "Age": vul_person[0].age
+    required: False
+    show if:
+      variable: is_involves_vulnerable
+      is: True
+  - "Sex": vul_person[0].sex
+    required: False
+    show if:
+      variable: is_involves_vulnerable
+      is: True
+  - "Race": vul_person[0].ethnic
+    required: False
+    show if:
+      variable: is_involves_vulnerable
+      is: True
+---
+code: |
+  if is_involves_vulnerable:
+    is_vulnerable_adult = True
 ---
 id: Plaintiff Information
 question: |
   Plaintiff Information
 subquestion: |
-  Information of the party to be protected
+  Select all options that apply
 fields:
-  - "Build": protected[0].build
-  - "First Name:": protected[0].name.first
-  - "Locations": protected[0].skintone
-  - "Height": protected[0].height
-  - "Hair Color": protected[0].hair_color
-  - "Male": is_protected_male
+  - "I am the victim of 'Unlawful Harassment” committed by Defendant": is_victim_of_harassment
     datatype: yesno
-  - "Weight": protected[0].weight
-  - "Eye Color": protected[0].eye_color
-  - "Address (Street, City, State, Zip Code)": protected[0].address.address
-  - "Phone Number": protected[0].phone_number
-  - "Female": is_protected_female
+  - "I am the parent or guardian, family member or household member of child(ren) under the age of 18 or vulnerable adult and seek to restrain a person age 18 years of age or over from contact with child(ren) or vulnerable adult": is_guardian_of_victim
     datatype: yesno
-  - "Date of Birth": protected[0].birthdate
-    datatype: date
-  - "Race": protected[0].race
+  - "I am a member of the Mashpee Wampanoag Tribe.": is_plaintiff_member_of_mashpee
+    datatype: yesno
+  - "I am a member of another Federally recognized Indian Tribe": is_plaintiff_member_of_other_tribe
+    datatype: yesno
+  - "Tribe Name": tribe_name
+    required: False
+    show if:
+      variable: is_plaintiff_member_of_other_tribe
+      is: True
+  - "I am an employee of the Mashpee Wampanoag Tribe": is_plaintiff_mashpee_employee
+    datatype: yesno
+  - "I live within the boundaries of the MWT Indian Reservation.": is_plaintiff_on_reservation
+    datatype: yesno
 ---
-id: Need for an Interpreter
+code: |
+  is_plaintiff = is_victim_of_harassment
+---
+id: Defendant Information
+question: |
+  Defendant Information
+subquestion: |
+  Select all options that apply to the defendant
+fields:
+  - "Defendant is an employee of the Mashpee Wampanoag Tribe": is_defendant_mashpee_employee
+    datatype: yesno
+  - "Defendant is a member of the Mashpee Wampanoag Tribe": is_defendant_member_of_mashpee
+    datatype: yesno
+  - "The Defendant's \"'Unlawful Harassment\" took place within the boundaries of the MWT Reservation": is_events_on_reservation
+    datatype: yesno
+  - "Defendant lives within the boundaries of the MWT Indian Reservation": is_defendant_on_reservation
+    datatype: yesno
+  - "Defendant's Relationship to Protected Person": defendants[0].relationship_to_protected_person
+---
+id: Protected Person Information
+question: |
+  Protected Person Information
+subquestion: |
+  Provide identifying information for the person to be protected.
+fields:
+  - "Date of Birth": protected[0].birthdate
+    required: False
+    datatype: date
+  - "Eye Color": protected[0].eye_color
+    required: False
+    choices:
+      - Amber: Amber
+      - Black: Black
+      - Blue: Blue
+      - Brown: Brown
+      - Gray: Gray
+      - Green: Green
+      - Hazel: Hazel
+      - Red: Red
+      - Other/unknown: other/unknown
+  - Other Eye Color: protected_eye_color
+    required: False
+    show if:
+      variable: protected[0].eye_color
+      is: 'other/unknown'
+    maxlength: 9
+  - "Hair Color": protected[0].hair_color
+    required: False
+    choices:
+      - Brown: Brown
+      - Blond: Blond
+      - Black: Black
+      - Gray: Gray
+      - Red: Red
+      - White: White
+      - Other: other
+  - Other hair color: protected_hair_color
+    required: False
+    show if:
+      variable: protected[0].hair_color
+      is: "other"
+    maxlength: 9     
+  - "Race": protected[0].race
+    required: False
+    choices:
+      - White: White
+      - Black or African American: Black
+      - American Indian or Alaska Native: Native Amer.
+      - Asian: Asian
+      - Native Hawaiian or Other Pacific Islander: Pacific Is.
+      - Hispanic or Latino/Latina/Latinx: Hispanic
+      - Multiracial: Multiracial
+      - Other: other
+  - Other Race: protected_race_other
+    required: False
+    show if: 
+      variable: protected[0].race
+      is: other
+    maxlength: 9 
+  - "Height": protected[0].height
+    required: False
+    hint: e.g., 5 foot 10 inches
+  - "Weight": protected[0].weight
+    required: False
+    hint: e.g., 200lbs
+  - "Body Type or Build": protected[0].build
+    required: False
+    help: |
+      Select all that might be helpful to describe the person
+    datatype: checkboxes
+    choices:
+      - Small: Small
+      - Medium: Medium
+      - Large: Large
+      - Athletic: Athletic
+      - Muscular: Muscular
+      - Fat: Fat
+      - Thin: Thin
+  - "Skintone": protected[0].skintone
+    required: False
+  - "Gender": protected_gender
+    datatype: radio
+    choices:
+      - "Female": Female
+      - "Male": Male
+---
+code: |
+  protected[0].race = protected[0].race if not protected[0].race == 'other' else protected_race_other
+  protected[0].eye_color = protected[0].eye_color if not protected[0].eye_color == 'other/unknown' else protected_eye_color
+  protected[0].hair_color = protected[0].hair_color if not protected[0].hair_color == 'other' else protected_hair_color
+  if protected_gender == "Female":
+    is_protected_female = True
+    is_protected_male = False
+  if protected_gender == "Male":
+    is_protected_female = False
+    is_protected_male = True
+---
+id: Plaintiff Contact Information
+question: |
+  Plaintiff Information
+subquestion: |
+  Contact details of the party to be protected
+fields:
+  - code: |
+      protected[0].address_fields()
+  - "I wish to keep my residential address confidential": is_confidential_address
+    datatype: yesno
+  - "I wish to provide my legal mailing address": is_providing_legal_mailing_address
+    datatype: yesno
+#  - code: |
+#      if is_providing_legal_mailing_address:
+#        plaintiffs[0].address_fields()
+  - "Phone Number": protected[0].phone_number
+    required: False
+#  Figure out how to add plaintiffs.address_fields() to only show up  if the plaintiff wants to provide a mailing address
+#  Add support for confidential contact addess
+#   - "Phone Number": confidential[0].phone_number
+#    required: False
+#  - "Address (Street, City, State, Zip Code)": confidential[0].address.address
+#  - "First Name": confidential[0].name.first
+#    required: False
+---
+id: Defendant Information
+question: |
+  Defendant Information
+subquestion: |
+  Provide identifying information for the defendant in this order.
+fields:
+  - "Nickname": defendants[0].nickname
+    required: False
+  - "Date of Birth": defendants[0].birthdate
+    required: False
+    datatype: date
+  - "Eye Color": defendants[0].eye_color
+    required: False
+    choices:
+      - Amber: Amber
+      - Black: Black
+      - Blue: Blue
+      - Brown: Brown
+      - Gray: Gray
+      - Green: Green
+      - Hazel: Hazel
+      - Red: Red
+      - Other/unknown: other/unknown
+  - Other Eye Color: defendant_eye_color
+    required: False
+    show if:
+      variable: defendants[0].eye_color
+      is: 'other/unknown'
+    maxlength: 9
+  - "Hair Color": defendants[0].hair_color
+    required: False
+    choices:
+      - Brown: Brown
+      - Blond: Blond
+      - Black: Black
+      - Gray: Gray
+      - Red: Red
+      - White: White
+      - Other: other
+  - Other hair color: defendant_hair_color
+    required: False
+    show if:
+      variable: defendants[0].hair_color
+      is: "other"
+    maxlength: 9     
+  - "Race": defendants[0].race
+    required: False
+    choices:
+      - White: White
+      - Black or African American: Black
+      - American Indian or Alaska Native: Native Amer.
+      - Asian: Asian
+      - Native Hawaiian or Other Pacific Islander: Pacific Is.
+      - Hispanic or Latino/Latina/Latinx: Hispanic
+      - Multiracial: Multiracial
+      - Other: other
+  - Other Race: defendant_race_other
+    required: False
+    show if: 
+      variable: defendants[0].race
+      is: other
+    maxlength: 9 
+  - "Height": defendants[0].height
+    required: False
+    hint: e.g., 5 foot 10 inches
+  - "Weight": defendants[0].weight
+    required: False
+    hint: e.g., 200lbs
+  - "Body Type or Build": defendants[0].build
+    required: False
+    help: |
+      Select all that might be helpful to describe the person
+    datatype: checkboxes
+    choices:
+      - Small: Small
+      - Medium: Medium
+      - Large: Large
+      - Athletic: Athletic
+      - Muscular: Muscular
+      - Fat: Fat
+      - Thin: Thin
+  - "Skintone": defendants[0].skintone
+    required: False
+  - "Gender": defendant_gender
+    datatype: radio
+    choices:
+      - "Female": Female
+      - "Male": Male
+---
+code: |
+  defendants[0].race = defendants[0].race if not defendants[0].race == 'other' else defendant_race_other
+  defendants[0].eye_color = defendants[0].eye_color if not defendants[0].eye_color == 'other/unknown' else defendant_eye_color
+  defendants[0].hair_color = defendants[0].hair_color if not defendants[0].hair_color == 'other' else defendant_hair_color
+  if defendant_gender == "Female":
+    is_defendant_female = True
+    is_defendant_male = False
+  if defendant_gender == "Male":
+    is_defendant_female = False
+    is_defendant_male = True
+---
+id: Plaintiff Need for an Interpreter
 question: |
   Need for an Interpreter
 subquestion: |
   Does the plaintiff require an interpreter?
 fields:
-  - "No": is_protected_not_need_interpreter
-    datatype: yesno
-  - "Yes": is_protected_need_interpreter
-    datatype: yesno
+  - "Does the Plaintiff require an interpreter?": is_protected_need_interpreter
+    datatype: yesnoradio
   - "Language": protected[0].language
     required: False
+    show if:
+      variable: is_protected_need_interpreter
+      is: True
 ---
-id: Petition Information
-question: |
-  Petition Information
-subquestion: |
-  Select all that apply
-fields:
-  - "I live within the boundaries of the MWT Indian Reservation.": is_plaintiff_on_reservation
-    datatype: yesno
-  - "I am a member of a Federally recognized Indian Tribe": is_plaintiff_member_of_other_tribe
-    datatype: yesno
-  - "The \"'Unlawful Harassment\" took place within the boundaries of the MWT Reservation": is_events_on_reservation
-    datatype: yesno
-  - "MWT Prosecutor": is_prosecutor
-    datatype: yesno
-  - "I am a member of the Mashpee Wampanoag Tribe.": is_plaintiff_member_of_mashpee
-    datatype: yesno
-  - "I am the victim of 'Unlawful Harassment” committed by Defendant. as described in the statement": is_victim_of_harassment
-    datatype: yesno
-  - "Plaintiff is an employee of the Mashpee Wampanoag Tribe": is_plaintiff_mashpee_employee
-    datatype: yesno
-  - "Defendant is an employee of the Mashpee Wampanoag Tribe": is_defendant_mashpee_employee
-    datatype: yesno
-  - "Defendant is a member of the Mashpee Wampanoag Tribe": is_defendant_member_of_mashpee
-    datatype: yesno
-  - "I am the parent or guardian, family member or household member of child(ren) under the age of 18 or vulnerable adult and seek to restrain a person age 18 years of age or over from contact with child(ren) or vulnerable adult because contact is detrimental, as described in the statement below": is_guardian_of_victim
-    datatype: yesno
-  - "Defendant lives within the boundaries of the MWT Indian Reservation": is_defendant_on_reservation
+code: |
+  if is_protected_need_interpreter:
+    is_protected_not_need_interpreter = False
+  elif not is_protected_need_interpreter:
+    is_protected_not_need_interpreter = True
 ---
-id: Identification of Minors and Vulnerable Adults
+id: Defendant Need for an Interpreter
 question: |
-  Identification of Minors and Vulnerable Adults
+  Need for an Interpreter
 subquestion: |
-  Identify any minors or vulnerable adults
+  Defendant's Need for an interpreter
 fields:
-  - "Sex": vul_person[0].sex
-  - "Age": vul_person[0].age
-    datatype: number
+  - "Does the Defendant require an interpreter?": is_defendant_need_interpreter
+    datatype: yesnoradio
+  - "Language": defendants[0].language
     required: False
-  - "Race or Tribal Affiliation": vul_person[0].ethnic
-  - "The case involves minors or vulnerable adults": is_involves_vulnerable
-    datatype: yesno
-  - "First Name": vul_person[0].name.first
-    required: False
+    show if:
+      variable: is_defendant_need_interpreter
+      is: True
+---
+code: |
+  if is_defendant_need_interpreter:
+    is_defendant_not_need_interpreter = False
+  elif not is_defendant_need_interpreter:
+    is_defendant_not_need_interpreter = True
 ---
 id: Related Cases
 question: |
   Related Cases
 subquestion: |
-  List any other court cases or other restraining, protection or no-contact orders involving Plaintiff, Defendant, minor child(ren) or vulnerable adults)
+  List any other court cases or other restraining, protection or no-contact orders involving Plaintiff, Defendant, minor child(ren) or vulnerable adults
 fields:
   - "Court or County": cases[0].court_or_county
+    required: False
   - "Case Name": cases[0].name
+    required: False
   - "Case Number": cases[0].number
     required: False
----
-id: Order Specifications Protected Person
-question: |
-  Order Specifications: Protected Person
-subquestion: |
-  This order will restrain the defendant from making any contact; digital, by mail, or in person, with:
-fields:
-  - "I am the plaintiff": is_plaintiff
-    datatype: yesno
-  - "Protection is a minor or vulnerable adult": is_minors_or_vulnerable_adults
-    datatype: yesno
 ---
 id: Order Specifications Locations
 question: |
@@ -301,14 +634,17 @@ question: |
 subquestion: |
   Defendant will be restrained from the following locations, by the given distance.
 fields:
-  - "Other Locations": other_restrained_locations
-    required: False
-  - "Other": is_restrained_other
-    datatype: yesno
   - "Workplace": is_restrained_workplace
     datatype: yesno
   - "Residence": is_restrained_residence
     datatype: yesno
+  - "Other": is_restrained_other
+    datatype: yesno
+  - "Other Locations": other_restrained_locations
+    required: False
+    show if:
+      variable: is_restrained_other
+      is: True
   - "Units": restrained_distance_units
   - "Distance": restrained_distance
 ---
@@ -318,39 +654,24 @@ question: |
 subquestion: |
   Provide the required information describing the harassing activity:
 fields:
+  - "The Defendant has committed acts of \"Unlawful Harassment\" as follows. (Describe SPECIFIC acts of harassment and their approximate DATES, beginning with the most RECENT act. You may want to include Police Responses/Reports)": statement_1
+    input type: area
   - "Continued Statement": additional_statement
     input type: area
     required: False
   - "If you request a fee waiver, describe the incident(s) involving stalking, a sex offense, or domestic violence": statement_2
     input type: area
     required: False
-  - "The Defendant has committed acts of \"Unlawful Harassment\" as follows. (Describe SPECIFIC acts of harassment and their approximate DATES, beginning with the most RECENT act. You may want to include Police Responses/Reports)": statement_1
-    input type: area
----
-id: Date Location of Statement
-question: |
-  Date & Location of Statement
-fields:
   - "I record this statement in the town of": town_name
   - "Date of Statement": statement_date
     datatype: date
----
-id: Plaintiff Mailing Address
-question: |
-  Plaintiff Mailing Address
-fields:
-  - "Keep Address Confidential": is_confidential_address
-  - "I wish to provide my legal mailing address": is_providing_legal_mailing_address
-    datatype: yesno
 ---
 id: Law Enforcement Information
 question: |
   Law Enforcement Information:
 subquestion: |
-  Check all that apply
+  Check all situations that that apply
 fields:
-  - "Vulnerable Adult": is_vulnerable_adult
-    datatype: yesno
   - "Domestic Violence": is_domestic_violence
     datatype: yesno
   - "Unlawful Harassment": is_unlawful_harassment
@@ -358,83 +679,83 @@ fields:
   - "Dissolution/ Separation/ Invalidity/ Nonparental Custody/ Paternity": is_separation_invalidity_nonparental_custody_paternity
     datatype: yesno
   - "Sexual Assault": is_sexual_assault
-    datatype: yesnoradio
+    datatype: yesno
 ---
-id: Law Enforcement Information Restrained Information
+id: Law Enforcement Information Employment
 question: |
-  Law Enforcement Information: Restrained Information
+  Defendant Vehicle Information
 subquestion: |
-  Provide information about the person to be restrained
+  Provide information defendant's driver's license and vehicle if known
 fields:
-  - "Work Phone Number": defendants[0].work_phone_number
+  - "Driver's License Number": defendants[0].driver_license_number
     required: False
-  - "Female": is_defendant_female
-    datatype: yesno
-  - "State": defendants[0].license_state
-  - "Employer Address": defendants[0].employer_address
+  - "Driver's License Issuing State": defendants[0].license_state
     required: False
-  - "Defendants[0].driver license number": defendants[0].driver_license_number
-  - "Defendant Employer": defendant_employer
-    required: False
-  - "Male": is_defendant_male
-    datatype: yesno
-  - "Relationship to Protected Person": defendants[0].relationship_to_protected_person
-  - "Build": defendants[0].build
-  - "Weight": defendants[0].weight
   - "Vehicle Make & Model": defendants[0].vehicle_make_model
-  - "Height": defendants[0].height
-  - "Skin Tone": defendants[0].skintone
-  - "Hair Color": defendants[0].hair_color
-  - "Vehicle Color": defendants[0].vehicle_color
-  - "Eye Color": defendants[0].eye_color
-  - "Race": defendants[0].race
-  - "Work Hours": defendants[0].work_hours
+    required: False
   - "Vehicle License Number": defendants[0].vehicle_license_number
-  - "Nickname": defendants[0].nickname
     required: False
   - "Vehicle License Year": defendants[0].vehicle_license_year
     datatype: number
 ---
-id: Does Defendant Require an Interpreter
+id: Law Enforcement Information Employment
 question: |
-  Does Defendant Require an Interpreter
+  Defendant Employment
+subquestion: |
+  Provide information about the person to be restrained
 fields:
-  - "Yes": is_defendant_need_interpreter
-    datatype: yesno
+  - "Defendant's Employer": defendant_employer
+    required: False
+  - "Work Phone Number": defendants[0].work_phone_number
+    required: False
+  - "Employer Address": defendants[0].employer_address
+    required: False
+  - "Work Hours": defendants[0].work_hours
 ---
 id: Restrained Person Impairment
 question: |
-  Restrained Person Impairment
+  Defendant Impairment
 fields:
+  - "Is the defendant impaired?": impaired
+    datatype: yesnoradio
   - "Describe disability or impairment": disability_or_injury_description
     input type: area
-  - "No": is_not_impaired
-    datatype: yesno
-  - "Yes": is_impaired
-    datatype: yesno
+    show if:
+      variable: impaired
+      is: True
+---
+code: |
+  if impaired:
+    is_impaired = True
+    is_not_impaired = False
+  else:
+    is_impaired = False
+    is_not_impaired = True
 ---
 id: Hazard Information
 question: |
   Hazard Information
 subquestion: |
-  Restrained Person’s History Includes:
+  Select all that apply to the defendant’s history:
 fields:
   - "Assault with Weapons": is_assault_with_weapons
     datatype: yesno
   - "Other": is_other_hazard
     datatype: yesno
   - "Suicide Attempt or Threats": is_suicide_attempt_or_threats
+    datatype: yesno
   - "Involuntary/ Voluntary Commitment": is_involuntary_voluntary_commitment
     datatype: yesno
   - "Alcohol/ Drug Abuse": is_alcohol_drug_abuse
     datatype: yesno
   - "Assault": is_assault
+    datatype: yesno
 ---
 id: Weapon Possession
 question: |
   Weapon Possession
 subquestion: |
-  Indicate any weapon that the restrained person possesses
+  Indicate any weapon that the restrained person possesses:
 fields:
   - "Rifles": has_rifles
     datatype: yesno
@@ -445,137 +766,135 @@ fields:
   - "Handguns": has_handguns
     datatype: yesno
   - "Other": has_other_weapon
+    required: False
 ---
 id: Location of Weapons
 question: |
   Location of Weapons
 subquestion: |
-  Indicate where the restrained person keeps their weapons
+  Where does the defendant keep their weapons, if any?
 fields:
-  - "Date of Birth": minor[0].birthdate
-    datatype: date
-    required: False
   - "Vehicle": is_vehicle
+    datatype: yesno
   - "Residence": is_residence
+    datatype: yesno
   - "On Person": is_on_person
     datatype: yesno
+  - "Describe any weapons and their locations in detail": weapon_location_description
+    required: False
 ---
 id: Current Status Cohabitation
 question: |
   Current Status: Cohabitation
 subquestion: |
-  Is the restrained person a current or former cohabitant as an intimate partner?
+  Provide information about your relationship with the defendant and their awareness of this petition
 fields:
-  - "N/A": is_intimate_not_applicable
-    datatype: yesno
-  - "Yes": is_intimate
-    datatype: yesno
-  - "No": is_not_intimate
-    datatype: yesno
+  - "Does the defendant know you’re trying to get this order?": order_aware
+    datatype: radio
+    choices:
+      - "N/A": "NA"
+      - "Yes": "Yes"
+      - "No": "No"
+  - "Is the defendant likely to react violently when served?": violent
+    datatype: radio
+    choices:
+      - "N/A": "NA"
+      - "Yes": "Yes"
+      - "No": "No"
+  - "Is the defendant a current or former cohabitant as an intimate partner?": cohabitant
+    datatype: radio
+    choices:
+      - "N/A": "NA"
+      - "Yes": "Yes"
+      - "No": "No"
+  - "Are you and the defendant currently living together?": current
+    datatype: radio
+    show if:
+      variable: cohabitant
+      is: "Yes"
+    choices:
+      - "N/A": "NA"
+      - "Yes": "Yes"
+      - "No": "No"
+  - "Does the defendant know he/she may be moved out of the home?": moved
+    datatype: radio
+    show if:
+      variable: current
+      is: "Yes"
+    choices:
+      - "N/A": "NA"
+      - "Yes": "Yes"
+      - "No": "No"
 ---
-id: Current Status Cohabitation
-question: |
-  Current Status: Cohabitation
-subquestion: |
-  Are you and the restrained person living together now?
-fields:
-  - "No": is_not_living_together
-    datatype: yesno
-  - "N/A": is_together_not_applicable
-    datatype: yesno
-  - "Yes": is_living_together
-    datatype: yesno
----
-id: Current Status Awareness
-question: |
-  Current Status: Awareness
-subquestion: |
-  Does the restrained person know he/she may be moved out of the home?
-fields:
-  - "N/A": is_move_aware_not_applicable
-    datatype: yesno
-  - "No": is_not_move_aware
-    datatype: yesno
-  - "Yes": is_move_aware
----
-id: Current Status Awareness
-question: |
-  Current Status: Awareness
-subquestion: |
-  Does the restrained person know you’re trying to get this order?
-fields:
-  - "N/A": is_defendant_aware_not_applicable
-    datatype: yesno
-  - "No": is_defendant_not_aware
-    datatype: yesno
-  - "Yes": is_defendant_aware
----
-id: Current Status Awareness
-question: |
-  Current Status: Awareness
-subquestion: |
-  Is the restrained person likely to react violently when served?
-fields:
-  - "N/A": is_violent_not_applicable
-    datatype: yesno
-  - "Yes": is_violent
-    datatype: yesno
-  - "No": is_not_violent
-    datatype: yesno
----
-id: Confidential Contact
-question: |
-  Confidential Contact
-subquestion: |
-  If your Information is Confidential, provide information for a contact.
-fields:
-  - "Phone Number": confidential[0].phone_number
-    required: False
-  - "Address (Street, City, State, Zip Code)": confidential[0].address.address
-  - "First Name": confidential[0].name.first
-    required: False
----
-#id: Filer Information
-#question: |
-#  Filer Information
-#subquestion: |
-#  If you filed for someone else, list your name, phone number, and address
-#fields:
-#  - "Address (Street, City, State, Zip Code)": filer[0].address.address
-#    required: False
-#  - "First Name": filer[0].name.first
-#  - "Phone Number": filer[0].phone_number
-#    required: False
-#---
-id: Minor Children
-question: |
-  Minor Children
-subquestion: |
-  Provide the following information for any minor children
-fields:
-  - "Resides With": minor[0].reside_with
-  - "Race": minor[0].ethnic
-  - "Minor's Relationship to Protected Person": minor[0].protected_relationship
-  - "Sex": minor[0].sex
-  - "First Name": minor[0].name.first
-  - "Minor's Relationship to Restrained Person": minor[0].restrained_relationship
-    required: False
----
-id: Victim s Household Members or Adult Children Protected
-question: |
-  Victim’s Household Members or Adult Children Protected
-fields:
-  - "First Name": household[0].name.first
-    required: False
----
-id: Miscellaneous
-question: |
-  Miscellaneous
-fields:
-  - "Describe any weapons and their locations": weapon_location_description
-    input type: area
-    required: False
-  - "Tribe Name": tribe_name
+code: |
+  if order_aware == "NA":
+    is_defendant_aware_not_applicable = True
+    is_defendant_aware = False
+    is_defendant_not_aware = False
+  elif order_aware == "Yes":
+    is_defendant_aware_not_applicable = False
+    is_defendant_aware = True
+    is_defendant_not_aware = False
+  elif order_aware == "No":
+    is_defendant_aware_not_applicable = False
+    is_defendant_aware = False
+    is_defendant_not_aware = True
+
+  if violent == "NA":
+    is_violent_not_applicable = True
+    is_violent = False
+    is_not_violent = False
+  elif violent == "Yes":
+    is_violent_not_applicable = False
+    is_violent = True
+    is_not_violent = False
+  elif violent == "No":
+    is_violent_not_applicable = False
+    is_violent = False
+    is_not_violent = True
+  
+  if cohabitant == "NA":
+    is_intimate_not_applicable = True
+    is_intimate = False
+    is_not_intimate = False
+    current = "NA"
+  elif cohabitant == "Yes":
+    is_intimate_not_applicable = False
+    is_intimate = True
+    is_not_intimate = False
+  elif cohabitant == "No":
+    is_intimate_not_applicable = False
+    is_intimate = False
+    is_not_intimate = True
+    current = "NA"
+
+  if current == "NA":
+    is_together_not_applicable = True
+    is_living_together = False
+    is_not_living_together = False
+    moved = "NA"
+  elif current == "Yes":
+    is_together_not_applicable = False
+    is_living_together = True
+    is_not_living_together = False
+  elif current == "No":
+    is_together_not_applicable = False
+    is_living_together = False
+    is_not_living_together = True
+    moved = "NA"
+
+  if moved == "NA":
+    is_move_aware_not_applicable = True
+    is_move_aware = False
+    is_not_move_aware = False
+  elif moved == "Yes":
+    is_move_aware_not_applicable = False
+    is_move_aware = True
+    is_not_move_aware = False
+  elif moved == "No":
+    is_move_aware_not_applicable = False
+    is_move_aware = False
+    is_not_move_aware = True
 ---
 id: preview mwt_petition_for_harassment_protect
 question: |
