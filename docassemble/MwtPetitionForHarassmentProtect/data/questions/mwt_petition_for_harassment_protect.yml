@@ -156,8 +156,9 @@ code: |
   al_intro_screen
   mwt_petition_for_harassment_protect_intro
   interview_order_mwt_petition_for_harassment
+  mwt_petition_for_harassment_protect_preview_question
+  plaintiffs[0].signature
   signature_date
-  # Store anonymous data for analytics / statistics
   store_variables_snapshot(
       persistent=True,
       data={
@@ -978,7 +979,7 @@ code: |
     is_move_aware = False
     is_not_move_aware = True
 ---
-id: preview mwt_petition_for_harassment_protect
+id: preview 
 question: |
   Preview your form before you sign it
 subquestion: |
@@ -993,6 +994,15 @@ subquestion: |
   
   Remember to come back to this window to continue and sign your form.
 continue button field: mwt_petition_for_harassment_protect_preview_question    
+---
+id: plaintiff_signature
+question: |
+  Sign your petition
+subquestion: |
+  Please sign your name below.
+signature: plaintiffs[0].signature
+under: |
+  ${ plaintiffs[0].name.full() if defined('plaintiffs[0].name.first') else '' }
 ---
 code: |
   signature_fields = ['plaintiffs[0].signature']
