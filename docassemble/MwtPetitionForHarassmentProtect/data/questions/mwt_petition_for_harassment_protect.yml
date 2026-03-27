@@ -549,13 +549,13 @@ question: |
 subquestion: |
   Plaintiff Address & Contact information
 fields:
-  - "Is this your mailing address?": is_same_mailing_address
-    datatype: yesno
-    show if:
-      code: |
-        is_providing_legal_mailing_address
   - code: |
       protected[0].address_fields()
+  - "Is this your mailing address?": is_same_mailing_address
+    datatype: yesno
+#    show if:
+#      code: |
+#        is_providing_legal_mailing_address
 ---
 code: |
   if is_same_mailing_address and is_providing_legal_mailing_address:
