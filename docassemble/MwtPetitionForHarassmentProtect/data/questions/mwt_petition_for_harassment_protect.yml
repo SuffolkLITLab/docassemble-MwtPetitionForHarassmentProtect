@@ -121,7 +121,7 @@ code: |
 
   set_progress(22)
   nav.set_section("defendant_information")
-  defendants.gather()
+  defendants[0].name.first
   is_defendant_mashpee_employee
   defendants[0].birthdate
   defendants[0].driver_license_number
@@ -224,6 +224,24 @@ code: |
   is_involves_vulnerable = False
   is_vulnerable_adult = False
   is_guardian_of_victim = False
+---
+id: protected_person_name
+question: |
+  What is your name?
+fields:
+  - First name: protected[0].name.first
+  - Middle name: protected[0].name.middle
+    required: False
+  - Last name: protected[0].name.last
+---
+id: defendant_name
+question: |
+  What is the defendant's name?
+fields:
+  - First name: defendants[0].name.first
+  - Middle name: defendants[0].name.middle
+    required: False
+  - Last name: defendants[0].name.last
 ---
 id: case_information
 question: |
@@ -398,7 +416,7 @@ question: |
   Which of the following apply to your situation?
 subquestion: |
   These questions help determine whether the Mashpee Wampanoag Tribal Court can hear your case.
-  
+
   You may select all that apply.
 fields:
   - "I am a member of the Mashpee Wampanoag Tribe": is_plaintiff_member_of_mashpee
@@ -1068,19 +1086,16 @@ review:
       ${ word(yesno(is_defendant_on_reservation)) }
   - Edit: protected[0].name.first
     button: |
-      **Protected person's first name**:
-      ${ protected[0].name.first }
+      **Your name**:
+      ${ protected[0].name.full() if defined('protected[0].name.first') else '' }
+  - Edit: defendants[0].name.first
+    button: |
+      **Defendant's name**:
+      ${ defendants[0].name.full() if defined('defendants[0].name.first') else '' }
   - Edit: plaintiffs[0].phone_number
     button: |
       **Plaintiff phone number**:
       ${ plaintiffs[0].phone_number if defined('plaintiffs[0].phone_number') else '' }
-  - Edit: defendants.revisit
-    button: |
-      **Defendants**
-
-      % for item in defendants:
-        * ${ item }
-      % endfor
   - Edit: cases[0].court_or_county
     button: |
       **Court or County**:
