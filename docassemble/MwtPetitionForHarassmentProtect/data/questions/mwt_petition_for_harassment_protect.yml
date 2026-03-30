@@ -157,6 +157,7 @@ code: |
   mwt_petition_for_harassment_protect_intro
   interview_order_mwt_petition_for_harassment
   mwt_petition_for_harassment_protect_preview_question
+  filing_method_choice
   plaintiffs[0].signature
   signature_date
   store_variables_snapshot(
@@ -994,6 +995,21 @@ subquestion: |
   
   Remember to come back to this window to continue and sign your form.
 continue button field: mwt_petition_for_harassment_protect_preview_question    
+---
+id: filing_method_choice
+question: |
+  How would you like to file your petition?
+subquestion: |
+  Your petition is complete and ready to be filed.
+
+  If you would like to download your petition and go to the court to file it in person, click **Download now**.
+
+  If you would like to file your petition electronically, click **Next** to continue. You will be asked to complete an electronic signature before submitting your petition online.
+continue button field: filing_method_choice
+action buttons:
+  - label: Download now
+    action: mwt_petition_for_harassment_protect_download
+    color: primary
 ---
 id: plaintiff_signature
 question: |
