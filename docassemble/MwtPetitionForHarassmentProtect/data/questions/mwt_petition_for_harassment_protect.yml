@@ -107,7 +107,7 @@ code: |
   user_role = "plaintiff"
 
   nav.set_section("plaintiff_information")
-  is_victim_of_harassment
+  is_plaintiff_member_of_mashpee
   set_progress(11)
   protected[0].name.first
   protected[0].eye_color
@@ -395,15 +395,15 @@ code: |
 ---
 id: plaintiff_information
 question: |
-  Plaintiff Information
+  Which of the following apply to your situation?
 subquestion: |
-  Select all options that apply
+  These questions help determine whether the Mashpee Wampanoag Tribal Court can hear your case.
+  
+  You may select all that apply.
 fields:
-  - "I am the victim of 'Unlawful Harassment' committed by Defendant": is_victim_of_harassment
+  - "I am a member of the Mashpee Wampanoag Tribe": is_plaintiff_member_of_mashpee
     datatype: yesno
-  - "I am a member of the Mashpee Wampanoag Tribe.": is_plaintiff_member_of_mashpee
-    datatype: yesno
-  - "I am a member of another Federally recognized Indian Tribe": is_plaintiff_member_of_other_tribe
+  - "I am a member of another federally recognized tribe": is_plaintiff_member_of_other_tribe
     datatype: yesno
   - "Tribe Name": tribe_name
     required: False
@@ -412,11 +412,10 @@ fields:
       is: True
   - "I am an employee of the Mashpee Wampanoag Tribe": is_plaintiff_mashpee_employee
     datatype: yesno
-  - "I live within the boundaries of the MWT Indian Reservation.": is_plaintiff_on_reservation
+  - "I live within the boundaries of the MWT Indian Reservation": is_plaintiff_on_reservation
     datatype: yesno
----
-code: |
-  is_plaintiff = is_victim_of_harassment
+  - "The defendant lives within the boundaries of the MWT Indian Reservation": is_defendant_on_reservation
+    datatype: yesno
 ---
 id: Defendant Information
 question: |
@@ -1047,10 +1046,26 @@ review:
     button: |
       **Type of protection order**:
       ${ protection_order_type }
-  - Edit: is_victim_of_harassment
+  - Edit: is_plaintiff_member_of_mashpee
     button: |
-      **Victim of unlawful harassment**:
-      ${ word(yesno(is_victim_of_harassment)) }
+      **Mashpee Wampanoag Tribe member**:
+      ${ word(yesno(is_plaintiff_member_of_mashpee)) }
+  - Edit: is_plaintiff_member_of_other_tribe
+    button: |
+      **Member of another federally recognized tribe**:
+      ${ word(yesno(is_plaintiff_member_of_other_tribe)) }
+  - Edit: is_plaintiff_mashpee_employee
+    button: |
+      **Mashpee Wampanoag Tribe employee**:
+      ${ word(yesno(is_plaintiff_mashpee_employee)) }
+  - Edit: is_plaintiff_on_reservation
+    button: |
+      **Plaintiff lives within the boundaries of the MWT Indian Reservation**:
+      ${ word(yesno(is_plaintiff_on_reservation)) }
+  - Edit: is_defendant_on_reservation
+    button: |
+      **Defendant lives within the boundaries of the MWT Indian Reservation**:
+      ${ word(yesno(is_defendant_on_reservation)) }
   - Edit: protected[0].name.first
     button: |
       **Protected person's first name**:
@@ -1082,61 +1097,3 @@ review:
     button: |
       **Defendant knows about petition**:
       ${ order_aware }
----
-table: plaintiffs.table
-rows: plaintiffs
-columns:
-  - Name: |
-      row_item.name.full() if defined("row_item.name.first") else ""
-  - Mailing address: |
-      row_item.mailing_address.block() if defined("row_item.mailing_address.address") else ""
-  - Signature: |
-      row_item.signature if defined("row_item.signature") else ""
-  - Birthdate: |
-      row_item.birthdate if defined("row_item.birthdate") else ""
-edit:
-  - name.first
-  - mailing_address.address
-  - signature
-  - birthdate
-confirm: True
----
-id: download mwt_petition_for_harassment_protect
-event: mwt_petition_for_harassment_protect_download
-question: |
-  All done
-subquestion: |
-  Thank you ${ users }. Your form is ready to download and deliver.
-
-  View, download, and send your form below. Click the "Edit answers" button to fix any mistakes.
-
-  ${ action_button_html(url_action('review_mwt_petition_for_harassment_protect'), label='Edit answers', color='info') }
-
-  ${ al_user_bundle.download_list_html() }
-
-  ${ al_user_bundle.send_button_html(show_editable_checkbox=True) }
-progress: 100
----
-objects:
-  - mwt_petition_for_harassment_protect_Post_interview_instructions: ALDocument.using(title="Instructions", filename="mwt_petition_for_harassment_protect_next_steps.docx", enabled=True, has_addendum=False)
-  - mwt_petition_for_harassment_protect_attachment: ALDocument.using(title="MWT Petition for Harassment Protection", filename="mwt_petition_for_harassment_protect", enabled=True, has_addendum=False)
----
-objects:
-  - al_user_bundle: ALDocumentBundle.using(elements=[mwt_petition_for_harassment_protect_Post_interview_instructions, mwt_petition_for_harassment_protect_attachment], filename="mwt_petition_for_harassment_protect", title="All forms to download for your records", enabled=True)
-  - al_court_bundle: ALDocumentBundle.using(elements=[mwt_petition_for_harassment_protect_attachment], filename="mwt_petition_for_harassment_protect", title="All forms to deliver to court", enabled=True)
----
-attachment:
-  name: Post-interview-Instructions
-  filename: mwt_petition_for_harassment_protect_next_steps
-  docx template file: mwt_petition_for_harassment_protect_next_steps.docx
-  variable name: mwt_petition_for_harassment_protect_Post_interview_instructions[i]
-  skip undefined: True
-  tagged pdf: True
----
-attachment:
-  name: mwt petition for harassment protect
-  filename: mwt_petition_for_harassment_protect
-  variable name: mwt_petition_for_harassment_protect_attachment[i]
-  skip undefined: True
-  docx template file: mwt_petition_for_harassment_protect.docx
-  tagged pdf: True
