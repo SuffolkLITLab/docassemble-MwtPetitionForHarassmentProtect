@@ -549,14 +549,23 @@ code: |
 ---
 id: Plaintiff Contact Information
 question: |
-  Plaintiff Information
+  ${ protected_person_name }, would you like to keep your address confidential on court documents?
 subquestion: |
-  ${ protected_person_name }, do you want to provide a mailing address or keep your primary address confidential?
+  The court still needs to know your address to process your case. If you choose to keep it confidential, your address will not appear on public documents, and you will need to provide a different mailing address where you can safely receive court communications.
 fields:
-  - "I wish to keep my residential address confidential": is_confidential_address
-    datatype: yesno
-  - "I wish to provide my legal mailing address": is_providing_legal_mailing_address
-    datatype: yesno
+  - "Choose one": address_privacy_choice
+    datatype: radio
+    choices:
+      - "Use my residential address as my mailing address": use_residential
+      - "Keep my residential address confidential and provide a different mailing address": confidential_and_different
+---
+code: |
+  if address_privacy_choice == "use_residential":
+    is_confidential_address = False
+    is_providing_legal_mailing_address = False
+  elif address_privacy_choice == "confidential_and_different":
+    is_confidential_address = True
+    is_providing_legal_mailing_address = True
 ---
 code: |
   if not is_providing_legal_mailing_address:
