@@ -110,6 +110,7 @@ code: |
   is_plaintiff_member_of_mashpee
   set_progress(11)
   protected[0].name.first
+  protected_person_name
   protected[0].eye_color
   protected[0].phone_number
   is_confidential_address
@@ -234,9 +235,17 @@ fields:
     required: False
   - Last name: protected[0].name.last
 ---
+code: |
+  plaintiffs[0].name.first = protected[0].name.first
+  plaintiffs[0].name.middle = protected[0].name.middle
+  plaintiffs[0].name.last = protected[0].name.last
+  protected_person_name = protected[0].name.full()
+---
 id: defendant_name
 question: |
   What is the defendant's name?
+subquestion: |
+  Please provide the name of the person from whom ${ protected_person_name } is seeking protection.
 fields:
   - First name: defendants[0].name.first
   - Middle name: defendants[0].name.middle
@@ -325,7 +334,7 @@ id: Filer Information
 question: |
   Petition Filer Information
 subquestion: |
-  Provide identifying information for the person filing this petition on behalf of the plaintiff
+  Provide identifying information for the person filing this petition on behalf of ${ protected_person_name }.
 fields:
   - "First Name": filer[0].name.first
   - "Last Name": filer[0].name.last
@@ -439,7 +448,7 @@ id: Defendant Information
 question: |
   Defendant Information
 subquestion: |
-  Select all options that apply to the defendant
+  Please answer the following questions about the defendant and the defendant's relationship to ${ protected_person_name }.
 fields:
   - "Defendant is an employee of the Mashpee Wampanoag Tribe": is_defendant_mashpee_employee
     datatype: yesno
@@ -449,13 +458,13 @@ fields:
     datatype: yesno
   - "Defendant lives within the boundaries of the MWT Indian Reservation": is_defendant_on_reservation
     datatype: yesno
-  - "Defendant's Relationship to Protected Person": defendants[0].relationship_to_protected_person
+  - "What is the defendant's relationship to ${ protected_person_name }?": defendants[0].relationship_to_protected_person
 ---
 id: Protected Person Information
 question: |
-  Protected Person Information
+ Please provide identifying information about yourself. 
 subquestion: |
-  Provide identifying information for the person to be protected.
+  This helps the court understand who you are, contact you if needed, and review your request for a protection order.
 fields:
   - "Date of Birth": protected[0].birthdate
     required: False
@@ -542,7 +551,7 @@ id: Plaintiff Contact Information
 question: |
   Plaintiff Information
 subquestion: |
-  Do you wish to provide a mailing address and or keep your primary address confidential
+  ${ protected_person_name }, do you want to provide a mailing address or keep your primary address confidential?
 fields:
   - "I wish to keep my residential address confidential": is_confidential_address
     datatype: yesno
@@ -562,7 +571,7 @@ id: Petitioner Mailing Address
 question: |
   Plaintiff Information
 subquestion: |
-  Petitioner Mailing Address
+  Please provide the mailing address for ${ protected_person_name }.
 fields:
   - "Phone Number": plaintiffs[0].phone_number
     required: False
@@ -573,7 +582,7 @@ id: Petitioner Confidential Address
 question: |
   Plaintiff Information
 subquestion: |
-  Petitioner Confidential Contact: If you are keeping your address confidential, you must provide a confidential contact.
+  If ${ protected_person_name } is keeping an address confidential, you must provide a confidential contact.
 fields:
   - "Phone Number": confidential[0].phone_number
     required: False
@@ -584,7 +593,7 @@ id: Plaintiff Address and Contact Information
 question: |
   Plaintiff Information
 subquestion: |
-  Plaintiff Address and Contact information
+  Please provide the address and contact information for ${ protected_person_name }.
 fields:
   - code: |
       protected[0].address_fields()
@@ -603,7 +612,7 @@ id: Defendant Identifying Information
 question: |
   Defendant Information
 subquestion: |
-  Provide identifying information for the defendant in this order.
+  Please provide identifying information for the defendant.
 fields:
   - "Nickname": defendants[0].nickname
     required: False
@@ -692,7 +701,7 @@ id: Plaintiff Need for an Interpreter
 question: |
   Need for an Interpreter
 subquestion: |
-  Does the plaintiff require an interpreter?
+  Does ${ protected_person_name } require an interpreter?
 fields:
   - "Does the Plaintiff require an interpreter?": is_protected_need_interpreter
     datatype: yesnoradio
@@ -712,7 +721,7 @@ id: Defendant Need for an Interpreter
 question: |
   Need for an Interpreter
 subquestion: |
-  Defendant's need for an interpreter
+  Does the defendant require an interpreter?
 fields:
   - "Does the Defendant require an interpreter?": is_defendant_need_interpreter
     datatype: yesnoradio
@@ -732,7 +741,7 @@ id: Related Cases
 question: |
   Related Cases
 subquestion: |
-  List any other court cases or other restraining, protection, or no contact orders involving Plaintiff, Defendant, minor children, or vulnerable adults
+  List any other court cases or other restraining, protection, or no contact orders involving ${ protected_person_name }, the defendant, minor children, or vulnerable adults.
 fields:
   - "Court or County": cases[0].court_or_county
     required: False
@@ -745,7 +754,7 @@ id: Order Specifications Locations
 question: |
   Order Specifications: Locations
 subquestion: |
-  Defendant will be restrained from the following locations, by the given distance.
+  Please select the locations from which the defendant should be restrained in order to protect ${ protected_person_name }.
 fields:
   - "Workplace": is_restrained_workplace
     datatype: yesno
@@ -765,7 +774,7 @@ id: Statement Under Oath
 question: |
   Statement Under Oath
 subquestion: |
-  Provide the required information describing the harassing activity:
+  Please describe what happened to ${ protected_person_name }.
 fields:
   - "The Defendant has committed acts of 'Unlawful Harassment' as follows. Describe specific acts of harassment and their approximate dates, beginning with the most recent act. You may want to include police responses or reports.": statement_1
     input type: area
@@ -783,7 +792,7 @@ id: Law Enforcement Information
 question: |
   Law Enforcement Information
 subquestion: |
-  Check all situations that apply
+  Check all situations that apply in ${ protected_person_name }'s case.
 fields:
   - "Unlawful Harassment": is_unlawful_harassment
     datatype: yesno
@@ -798,7 +807,7 @@ id: Defendant Vehicle Information
 question: |
   Defendant Vehicle Information
 subquestion: |
-  Provide information about the defendant's driver's license and vehicle, if known
+  Provide information about the defendant's driver's license and vehicle, if known.
 fields:
   - "Driver's License Number": defendants[0].driver_license_number
     required: False
@@ -816,7 +825,7 @@ id: Defendant Employment
 question: |
   Defendant Employment
 subquestion: |
-  Provide information about the person to be restrained
+  Provide information about where the defendant works, if known.
 fields:
   - "Defendant's Employer": defendant_employer
     required: False
@@ -830,6 +839,8 @@ fields:
 id: Restrained Person Impairment
 question: |
   Defendant Impairment
+subquestion: |
+  Please indicate whether the defendant has any known impairment.
 fields:
   - "Is the defendant impaired?": impaired
     datatype: yesnoradio
@@ -851,7 +862,7 @@ id: Hazard Information
 question: |
   Hazard Information
 subquestion: |
-  Select all that apply to the defendant’s history:
+  Select all that apply to the defendant’s history.
 fields:
   - "Assault with Weapons": is_assault_with_weapons
     datatype: yesno
@@ -870,7 +881,7 @@ id: Weapon Possession
 question: |
   Weapon Possession
 subquestion: |
-  Indicate any weapon that the restrained person possesses:
+  Indicate any weapon that the defendant possesses, if known.
 fields:
   - "Rifles": has_rifles
     datatype: yesno
@@ -887,7 +898,7 @@ id: Location of Weapons
 question: |
   Location of Weapons
 subquestion: |
-  Where does the defendant keep their weapons, if any?
+  Where does the defendant keep any weapons, if known?
 fields:
   - "Vehicle": is_vehicle
     datatype: yesno
@@ -902,7 +913,7 @@ id: Current Status Cohabitation
 question: |
   Current Status: Cohabitation
 subquestion: |
-  Provide information about your relationship with the defendant and their awareness of this petition
+  Please provide information about the defendant’s awareness of this petition and the defendant’s relationship to ${ protected_person_name }.
 fields:
   - "Does the defendant know you’re trying to get this order?": order_aware
     datatype: radio
@@ -1015,7 +1026,7 @@ id: mwt_petition_for_harassment_protect_preview_question
 question: |
   Preview your petition
 subquestion: |
-  Here is a preview of your petition. Review it carefully before continuing.
+  Here is a preview of ${ protected_person_name }'s petition. Review it carefully before continuing.
 
   Click the image to open it in a new tab. Click the "Edit answers" button to edit your answers.
 
@@ -1028,7 +1039,7 @@ id: filing_method_choice
 question: |
   How would you like to file your petition?
 subquestion: |
-  Your petition is complete and ready to be filed.
+  The petition for ${ protected_person_name } is complete and ready to be filed.
 
   If you would like to download your petition and go to the court to file it in person, click **Download now**.
 
@@ -1043,10 +1054,10 @@ id: plaintiff_signature
 question: |
   Sign your petition
 subquestion: |
-  Please sign your name below.
+  Please sign your name below for ${ protected_person_name }'s petition.
 signature: plaintiffs[0].signature
 under: |
-  ${ plaintiffs[0].name.full() if defined('plaintiffs[0].name.first') else '' }
+  ${ protected_person_name }
 ---
 code: |
   signature_fields = ['plaintiffs[0].signature']
@@ -1087,7 +1098,7 @@ review:
   - Edit: protected[0].name.first
     button: |
       **Your name**:
-      ${ protected[0].name.full() if defined('protected[0].name.first') else '' }
+      ${ protected_person_name }
   - Edit: defendants[0].name.first
     button: |
       **Defendant's name**:
@@ -1102,7 +1113,7 @@ review:
       ${ cases[0].court_or_county if defined('cases[0].court_or_county') else '' }
   - Edit: statement_1
     button: |
-      **Statement under oath**:
+      **Statement under oath for ${ protected_person_name }**:
       > ${ single_paragraph(statement_1) }
   - Edit: is_restrained_workplace
     button: |
