@@ -108,43 +108,45 @@ code: |
 
   nav.set_section("plaintiff_information")
   is_plaintiff_member_of_mashpee
-  set_progress(11)
+  set_progress(21)
   protected[0].name.first
   protected_person_name
   protected[0].eye_color
+  is_protected_need_interpreter
   protected[0].phone_number
   is_confidential_address
   is_same_mailing_address
   if is_confidential_address:
     confidential[0].phone_number
-  if is_providing_legal_mailing_address and not is_same_mailing_address:
+  if not is_same_mailing_address:
     plaintiffs[0].phone_number
-
-  set_progress(22)
+  set_progress(32)
   nav.set_section("defendant_information")
   defendants[0].name.first
+  is_defendant_need_interpreter
+  defendants[0].address.address
   is_defendant_mashpee_employee
   defendants[0].birthdate
   defendants[0].driver_license_number
   defendant_employer
-
-  set_progress(33)
+  set_progress(43)
   impaired
   has_rifles
   is_vehicle
   is_assault_with_weapons
-
-  set_progress(44)
+  set_progress(54)
   nav.set_section("related_cases")
   cases[0].court_or_county
-
   nav.set_section("harrassment_information")
   is_unlawful_harassment
+  set_progress(65)
   statement_1
+  set_progress(85)
   is_restrained_workplace
-
-  set_progress(55)
   order_aware
+  cohabitant
+  users[0] = protected[0]
+  plaintiffs[0] = protected[0]
   interview_order_mwt_petition_for_harassment = True
 ---
 mandatory: True
@@ -234,12 +236,17 @@ fields:
   - Middle name: protected[0].name.middle
     required: False
   - Last name: protected[0].name.last
+  - Suffix: protected[0].name.suffix
+    required: False
+    code: name_suffix()
 ---
 code: |
   plaintiffs[0].name.first = protected[0].name.first
   plaintiffs[0].name.middle = protected[0].name.middle
   plaintiffs[0].name.last = protected[0].name.last
   protected_person_name = protected[0].name.full()
+  users[0] = protected[0]
+  plaintiffs[0] = protected[0]
 ---
 id: defendant_name
 question: |
@@ -251,6 +258,9 @@ fields:
   - Middle name: defendants[0].name.middle
     required: False
   - Last name: defendants[0].name.last
+  - Suffix: protected[0].name.suffix
+    required: False
+    code: name_suffix()
 ---
 id: case_information
 question: |
@@ -503,6 +513,10 @@ fields:
       variable: protected[0].hair_color
       is: "other"
     maxlength: 9
+  - "Skintone": protected[0].skintone
+    required: False
+  - code: |
+      protected[0].gender_fields(show_help=False)
   - "Race": protected[0].race
     required: False
     choices:
@@ -537,15 +551,12 @@ fields:
       - Muscular: Muscular
       - Fat: Fat
       - Thin: Thin
-  - "Skintone": protected[0].skintone
-    required: False
-  - code: |
-      protected[0].gender_fields(show_help=False)
 ---
 code: |
   protected[0].race = protected[0].race if not protected[0].race == 'other' else protected_race_other
   protected[0].eye_color = protected[0].eye_color if not protected[0].eye_color == 'other/unknown' else protected_eye_color
   protected[0].hair_color = protected[0].hair_color if not protected[0].hair_color == 'other' else protected_hair_color
+  protected[0].build = protected[0].build.true_values()
 ---
 id: Plaintiff Contact Information
 question: |
@@ -568,13 +579,7 @@ code: |
     is_providing_legal_mailing_address = True
 ---
 code: |
-  if not is_providing_legal_mailing_address:
-    plaintiffs[0].address.address = ""
-    plaintiffs[0].address.unit = ""
-    plaintiffs[0].address.city = ""
-    plaintiffs[0].address.state = ""
-    plaintiffs[0].address.zip = ""
-    plaintiffs[0].address.set_unknowns_to_none()
+  is_providing_legal_mailing_address = True
 ---
 id: Petitioner Mailing Address
 question: |
@@ -589,7 +594,7 @@ fields:
 ---
 id: Petitioner Confidential Address
 question: |
-  Plaintiff Information
+  Confidential Contact Address
 subquestion: |
   If ${ protected_person_name } is keeping an address confidential, you must provide a confidential contact.
 fields:
@@ -610,7 +615,8 @@ fields:
     datatype: yesno
 ---
 code: |
-  if is_same_mailing_address and is_providing_legal_mailing_address:
+  users[0] = protected[0]
+  if is_same_mailing_address:
     plaintiffs[0].address.address = protected[0].address.address
     plaintiffs[0].address.unit = protected[0].address.unit
     plaintiffs[0].address.city = protected[0].address.city
@@ -662,6 +668,10 @@ fields:
       variable: defendants[0].hair_color
       is: "other"
     maxlength: 9
+  - "Skintone": defendants[0].skintone
+    required: False
+  - code: |
+      defendants[0].gender_fields(show_help=False)
   - "Race": defendants[0].race
     required: False
     choices:
@@ -696,15 +706,12 @@ fields:
       - Muscular: Muscular
       - Fat: Fat
       - Thin: Thin
-  - "Skintone": defendants[0].skintone
-    required: False
-  - code: |
-      defendants[0].gender_fields(show_help=False)
 ---
 code: |
   defendants[0].race = defendants[0].race if not defendants[0].race == 'other' else defendant_race_other
   defendants[0].eye_color = defendants[0].eye_color if not defendants[0].eye_color == 'other/unknown' else defendant_eye_color
   defendants[0].hair_color = defendants[0].hair_color if not defendants[0].hair_color == 'other' else defendant_hair_color
+  defendants[0].build = defendants[0].build.true_values()
 ---
 id: Plaintiff Need for an Interpreter
 question: |
@@ -787,13 +794,6 @@ subquestion: |
 fields:
   - "The Defendant has committed acts of 'Unlawful Harassment' as follows. Describe specific acts of harassment and their approximate dates, beginning with the most recent act. You may want to include police responses or reports.": statement_1
     input type: area
-  - "Continued Statement": additional_statement
-    input type: area
-    required: False
-  - "If you request a fee waiver, describe the incident or incidents involving stalking, a sex offense, or domestic violence": statement_2
-    input type: area
-    required: False
-  - "I record this statement in the town of": town_name
   - "Date of Statement": statement_date
     datatype: date
 ---
@@ -820,9 +820,9 @@ subquestion: |
 fields:
   - "Driver's License Number": defendants[0].driver_license_number
     required: False
-  - "Driver's License Issuing State": defendants[0].license_state
+  - "License Issuing State": defendants[0].license_state
     required: False
-  - "Vehicle Make and Model": defendants[0].vehicle_make_model
+  - "Make & Model": defendants[0].vehicle_make_model
     required: False
   - "Vehicle License Number": defendants[0].vehicle_license_number
     required: False
@@ -871,11 +871,11 @@ id: Hazard Information
 question: |
   Hazard Information
 subquestion: |
-  Select all that apply to the defendant’s history.
+  This information will help the court and law enforcement in making their decisions as well as safely interacting with the defendant.  Select all that apply to the defendant’s history:
 fields:
-  - "Assault with Weapons": is_assault_with_weapons
+  - "Assault": is_assault
     datatype: yesno
-  - "Other": is_other_hazard
+  - "Assault with Weapons": is_assault_with_weapons
     datatype: yesno
   - "Suicide Attempt or Threats": is_suicide_attempt_or_threats
     datatype: yesno
@@ -883,7 +883,7 @@ fields:
     datatype: yesno
   - "Alcohol or Drug Abuse": is_alcohol_drug_abuse
     datatype: yesno
-  - "Assault": is_assault
+  - "Other": is_other_hazard
     datatype: yesno
 ---
 id: Weapon Possession
@@ -920,46 +920,22 @@ fields:
 ---
 id: Current Status Cohabitation
 question: |
-  Current Status: Cohabitation
+  Current Status of Defendant
 subquestion: |
   Please provide information about the defendant’s awareness of this petition and the defendant’s relationship to ${ protected_person_name }.
 fields:
   - "Does the defendant know you’re trying to get this order?": order_aware
     datatype: radio
     choices:
-      - "N/A": "NA"
       - "Yes": "Yes"
       - "No": "No"
+      - "N/A": "NA"
   - "Is the defendant likely to react violently when served?": violent
     datatype: radio
     choices:
-      - "N/A": "NA"
       - "Yes": "Yes"
       - "No": "No"
-  - "Is the defendant a current or former cohabitant as an intimate partner?": cohabitant
-    datatype: radio
-    choices:
       - "N/A": "NA"
-      - "Yes": "Yes"
-      - "No": "No"
-  - "Are you and the defendant currently living together?": current
-    datatype: radio
-    show if:
-      variable: cohabitant
-      is: "Yes"
-    choices:
-      - "N/A": "NA"
-      - "Yes": "Yes"
-      - "No": "No"
-  - "Does the defendant know he or she may be moved out of the home?": moved
-    datatype: radio
-    show if:
-      variable: current
-      is: "Yes"
-    choices:
-      - "N/A": "NA"
-      - "Yes": "Yes"
-      - "No": "No"
 ---
 code: |
   if order_aware == "NA":
@@ -987,7 +963,40 @@ code: |
     is_violent_not_applicable = False
     is_violent = False
     is_not_violent = True
-
+---
+id: Current Status Cohabitation
+question: |
+  Current Status of Defendant
+subquestion: |
+  Is the defendanta a current or former intimate partner?
+fields:
+  - "Is the defendant a current or former cohabitant as an intimate partner?": cohabitant
+    datatype: radio
+    choices:
+      - "Yes": "Yes"
+      - "No": "No"
+      - "N/A": "NA"
+  - "Are you and the defendant currently living together?": current
+    datatype: radio
+    show if:
+      variable: cohabitant
+      is: "Yes"
+    choices:
+      - "Yes": "Yes"
+      - "No": "No"
+      - "N/A": "NA"
+  - "Does the defendant know he/she may be moved out of the home?": moved
+    datatype: radio
+    show if:
+      variable: current
+      is: "Yes"
+    choices:
+      - "Yes": "Yes"
+      - "No": "No"
+      - "N/A": "NA"
+---
+code: |
+  
   if cohabitant == "NA":
     is_intimate_not_applicable = True
     is_intimate = False
