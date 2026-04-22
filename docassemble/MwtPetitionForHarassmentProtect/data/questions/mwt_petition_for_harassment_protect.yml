@@ -201,7 +201,7 @@ subquestion: |
   1. Download and review the document
   2. File the petition with MWT authorities
 
-  Most people take about 1 hour and 30 minutes to complete this interview.
+  This may take up to 1 hour and 30 minutes depending on how much information you provide.
 ---
 code: |
   is_plaintiff = True
@@ -220,16 +220,17 @@ fields:
   - "Select one": protection_order_type
     datatype: radio
     choices:
-      - "Harassment: someone I do not have a close or family relationship with, such as a neighbor, coworker, acquaintance, or stranger": harassment
-      - "Domestic abuse: someone I have or had a close or family relationship with, such as a partner, ex, family member, someone I live with, or someone I share a child with": domestic_abuse
+      - "Harassment: repeated unwanted behavior by someone you don’t have a close or family relationship with, such as a neighbor, coworker, acquaintance, or stranger, that makes you feel scared, threatened, intimidated, or unsafe. This can include things a person says, does, or communicates through actions or gestures.": harassment
+      - "Domestic abuse: violence, threats, harassment, sexual assault, or unwanted contact within a family, household, or intimate relationship. It can also include behavior related to child support, custody, visitation, or other situations that may place a person who has experienced domestic violence, dating violence, sexual assault, or stalking at risk.": domestic_abuse
 ---
 id: domestic_abuse_exit_screen
 event: domestic_abuse_exit_screen
 question: |
-  This form is not the right form for you
+  This interview is only for people asking the Mashpee Wampanoag Tribal Court for a harassment protection order.
 subquestion: |
-  This interview is only for someone asking the Mashpee Wampanoag Tribal Court for a harassment protection order.
-  If you need a protection order for domestic abuse, do not continue with this form.
+  If you need a protection order for domestic abuse, please don't continue with this form. The Tribal Court may be able to help you find the right form and explain what steps to take next. 
+  
+  If you are in immediate danger or feel unsafe, call Tribal Police, local police, or dial 911 right away.
 buttons:
   - Exit: exit
 ---
@@ -263,7 +264,7 @@ id: defendant_name
 question: |
   What is the defendant's name?
 subquestion: |
-  Please provide the name of the person from whom ${ protected_person_name } is seeking protection.
+  Please provide the name of the person you're seeking protection from.
 fields:
   - First name: defendants[0].name.first
   - Middle name: defendants[0].name.middle
@@ -588,13 +589,15 @@ id: Plaintiff Contact Information
 question: |
   ${ protected_person_name }, would you like to keep your address confidential on court documents?
 subquestion: |
-  The court still needs to know your address to process your case. If you choose to keep it confidential, your address will not appear on public documents, and you will need to provide a different mailing address where you can safely receive court communications.
+ You may choose this option if sharing your residential address could affect your safety or privacy. If you do, we will need you to provide a different mailing address where you can safely receive court communications.
+
+  The court will still need to know your residential address to process your case, but choosing confidentiality means it will not appear in those court materials unless the court orders otherwise.
 fields:
   - "Choose one": address_privacy_choice
     datatype: radio
     choices:
-      - "Use my residential address as my mailing address": use_residential
-      - "Keep my residential address confidential and provide a different mailing address": confidential_and_different
+      - "Use my residential address as my mailing address. It may be included in the court filing or docket materials.": use_residential
+      - "Keep my residential address private from the court filing and docket materials. I’ll give a different mailing address where I can safely receive court communications.": confidential_and_different
 ---
 code: |
   if address_privacy_choice == "use_residential":
@@ -608,7 +611,7 @@ id: Petitioner Mailing Address
 question: |
   Plaintiff Information
 subquestion: |
-  Please provide the mailing address for ${ protected_person_name }.
+  Please provide your mailing address where you can safely receive court communications.
 fields:
   - "Phone Number": plaintiffs[0].phone_number
     required: False
@@ -630,11 +633,11 @@ id: Plaintiff Address and Contact Information
 question: |
   Plaintiff Information
 subquestion: |
-  Please provide the address and contact information for ${ protected_person_name }.
+  Please provide your residential address.
 fields:
   - code: |
       protected[0].address_fields()
-  - "Is this your mailing address?": is_same_mailing_address
+  - "This is my residential address": is_same_mailing_address
     datatype: yesno
 ---
 code: |
@@ -651,6 +654,8 @@ question: |
   Defendant Information
 subquestion: |
   Please provide identifying information for the defendant.
+  
+  This information helps the court and police identify the correct person, process your case, and make sure court papers are given to the right person if needed. Please provide as much information as you can.
 fields:
   - "Nickname": defendants[0].nickname
     required: False
@@ -795,7 +800,7 @@ id: Order Specifications Locations
 question: |
   Order Specifications: Locations
 subquestion: |
-  Please select the locations from which the defendant should be restrained in order to protect ${ protected_person_name }.
+  Please select the location(s) from which the defendant should be restrained in order to protect ${ protected_person_name }.
 fields:
   - "Workplace": is_restrained_workplace
     datatype: yesno
@@ -826,7 +831,7 @@ id: Law Enforcement Information
 question: |
   Law Enforcement Information
 subquestion: |
-  Check all situations that apply in ${ protected_person_name }'s case.
+  Check all situations that apply in this case.
 fields:
   - "Unlawful Harassment": is_unlawful_harassment
     datatype: yesno
@@ -915,7 +920,9 @@ id: Weapon Possession
 question: |
   Weapon Possession
 subquestion: |
-  This information will help the court and law enforcement in making their decisions as well as safely interacting with the defendant.  Indicate any weapon that the restrained person possesses:
+  This information will help the court and law enforcement in making their decisions as well as safely interacting with the defendant. Fill this out to the best of your ability.
+  
+  Indicate any weapon that the restrained person possesses, if known:
 fields:
   - "Rifles": has_rifles
     datatype: yesno
