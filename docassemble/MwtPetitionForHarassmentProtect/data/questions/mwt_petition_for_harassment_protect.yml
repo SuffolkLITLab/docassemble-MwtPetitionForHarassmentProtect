@@ -1,4 +1,4 @@
-include:
+is_defendant_need_interpreteinclude:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALAnyState:any_state.yml
   - docassemble.MWTTheme:main.yml
@@ -189,7 +189,7 @@ question: |
 subquestion: |
   This interview will help you ask the Mashpee Wampanoag Tribal Court for a protection order for harassment.
   
-  Before you get started, gather:
+  Before you get started, gather as much of the following information as possible:
   
     1. Your full legal name, current address, phone number, and email address.
     2. The Defendant’s full name, address, home, work, or other location, and any information that may help identify or locate them, such as phone number, employer, vehicle description, or social media profiles.
@@ -205,7 +205,7 @@ subquestion: |
   1. Download and review the document
   2. File the petition with MWT authorities
 
-  Most people may take up to 1 hour and 30 minutes to complete this interview.
+  This interview may take up to 1 hour and 30 minutes, depending on how much information you choose to share.
 ---
 code: |
   is_plaintiff = True
@@ -219,12 +219,12 @@ id: harassment_or_domestic_abuse_screen
 question: |
   What kind of protection order are you asking for?
 subquestion: |
-  Choose the option that best fits your situation.
+  
 fields:
-  - "Select one": protection_order_type
+  - "Select the option that best fits your situation": protection_order_type
     datatype: radio
     choices:
-      - "Harassment: someone I do not have a close or family relationship with, such as a neighbor, coworker, acquaintance, or stranger": harassment
+      - "Harassment: someone I don't have a close or family relationship with, such as a neighbor, coworker, acquaintance, or stranger": harassment
       - "Domestic abuse: someone I have or had a close or family relationship with, such as a partner, ex, family member, someone I live with, or someone I share a child with": domestic_abuse
 ---
 code: |
@@ -234,10 +234,11 @@ code: |
 id: domestic_abuse_exit_screen
 event: domestic_abuse_exit_screen
 question: |
-  This form is not the right form for you
+  This form is only for people asking the Mashpee Wampanoag Tribal Court for a harassment protection order.
 subquestion: |
-  This interview is only for someone asking the Mashpee Wampanoag Tribal Court for a harassment protection order.
-  If you need a protection order for domestic abuse, do not continue with this form.
+  If you need a protection order for domestic abuse, unfortunarely you may not continue with this form. The Tribal Court may be able to help you find the right form and explain what steps to take next.
+
+  If you are in immediate danger or feel unsafe, call Tribal Police, local police, or dial 911 right away.
 buttons:
   - Exit: exit
 ---
@@ -256,14 +257,14 @@ question: |
 subquestion: |
   This questionaire is intended to service the narrow situation of a non-domestic harrassment protection order you are petitioning for yourself.  Confirm that this is the case.
 fields:
-  - "I am the victim of Unlawful Harassment committed by the subject of this order": is_victim_of_harassment
+  - "I'm the victim of harassment committed by the subject of this order": is_victim_of_harassment
     datatype: yesno
   - "This is not a domestic violence case": is_domestic_violence
     datatype: yesno
 ---
 id: protected_person_name
 question: |
-  What is your name?
+  What's your name?
 fields:
   - First name: protected[0].name.first
   - Middle name: protected[0].name.middle
@@ -278,7 +279,9 @@ code: |
 ---
 id: defendant_name
 question: |
-  Provide the name of the person from whom ${ protected_person_name } is seeking protection.
+    Who are you asking the Tribal Court to protect you from?
+subquestion: |
+  This person will be known as the defendant in court documents.
 fields:
   - First name: defendants[0].name.first
   - Middle name: defendants[0].name.middle
@@ -290,9 +293,9 @@ fields:
 ---
 id: initial_question
 question: |
-  What is your name?
+  What's your name?
 subquestion: |
-  You are the petitioner and plaintiff in this case
+  You will be known as the plaintiff or petitioner in court documents. 
 fields:
   - First Name: protected[0].name.first
   - Middle Name: protected[0].name.middle
@@ -337,9 +340,9 @@ fields:
     datatype: radio
     required: True
     choices:
-      - "I am seeking this order of protection for myself": Myself
-      - "I am filing this form on behalf of another person": Another
-  - "I am seeking protection on behalf of a minor": is_protection_for_minor
+      - "I'm seeking this order of protection for myself": Myself
+      - "I'm filing this form on behalf of another person": Another
+  - "I'm seeking protection on behalf of a minor": is_protection_for_minor
     datatype: yesno
     show if:
       variable: order_protected_identity
@@ -430,9 +433,9 @@ fields:
     datatype: date
   - "Who does the minor reside with?": minor[i].reside_with
     required: False
-  - "What is the minor's relationship with the protected person?": minor[i].protected_relationship
+  - "What's the minor's relationship with the protected person?": minor[i].protected_relationship
     required: false
-  - "What is the minor's relationship with the restrained person?": minor[i].restrained_relationship
+  - "What's the minor's relationship with the restrained person?": minor[i].restrained_relationship
     required: false
 ---
 code: |
@@ -478,16 +481,16 @@ id: plaintiff_information
 question: |
   Which of the following apply to your situation?
 subquestion: |
-  Select all options that apply
+  Select all that apply:
 fields:
-  - "I am a member of the Mashpee Wampanoag Tribe.": is_plaintiff_member_of_mashpee
+  - "I'm a member of the Mashpee Wampanoag Tribe": is_plaintiff_member_of_mashpee
     datatype: yesno
   - "Tribal ID": tribal_number
     required: False
     show if:
       variable: is_plaintiff_member_of_mashpee
       is: True
-  - "I am a member of another federally recognized tribe": is_plaintiff_member_of_other_tribe
+  - "I'm a member of another federally recognized tribe": is_plaintiff_member_of_other_tribe
     datatype: yesno
   - "Tribe Name": tribe_name
     required: False
@@ -499,7 +502,7 @@ fields:
     show if:
       variable: is_plaintiff_member_of_other_tribe
       is: True
-  - "I am an employee of the Mashpee Wampanoag Tribe": is_plaintiff_mashpee_employee
+  - "I'm an employee of the Mashpee Wampanoag Tribe": is_plaintiff_mashpee_employee
     datatype: yesno
   - "I live within the boundaries of the MWT Indian Reservation": is_plaintiff_on_reservation
     datatype: yesno
@@ -508,35 +511,35 @@ fields:
 ---
 id: Defendant Information
 question: |
-  Tribe Relationship
+  What's ${ defendants[0].name.full() }'s' relationship to the MWT Revervation?
 subquestion: |
-  Answer the following questions about the defendant and the defendant's affiliation with the Mashpee Wampanoag tribe.
+  Select all that apply.
 fields:
-  - "Defendant is an employee of the Mashpee Wampanoag Tribe": is_defendant_mashpee_employee
+  - "${ defendants[0].name.full() } is an employee of the Mashpee Wampanoag Tribe": is_defendant_mashpee_employee
     datatype: yesno
-  - "Defendant is a member of the Mashpee Wampanoag Tribe": is_defendant_member_of_mashpee
+  - "${ defendants[0].name.full() } is a member of the Mashpee Wampanoag Tribe": is_defendant_member_of_mashpee
     datatype: yesno
   - "Tribal ID (If Known)": defendant_tribal_number
     required: False
     show if:
       variable: is_defendant_member_of_mashpee
       is: True
-  - "The Defendant's 'Unlawful Harassment' took place within the boundaries of the MWT Reservation": is_events_on_reservation
+  - "${ defendants[0].name.full() }'s harassment took place within the boundaries of the MWT Reservation": is_events_on_reservation
     datatype: yesno
-  - "Defendant lives within the boundaries of the MWT Indian Reservation": is_defendant_on_reservation
+  - "${ defendants[0].name.full() } lives within the boundaries of the MWT Indian Reservation": is_defendant_on_reservation
     datatype: yesno
 ---
 id: Defendant Information
 question: |
-  Personal Relationship
+  What's your relationship, if any, to ${ defendants[0].name.full() }?
 subquestion: |
-  Briefly describe the defendant's relationship to ${ protected_person_name }.
+  
 fields:
   - "Relationship": defendants[0].relationship_to_protected_person
 ---
 id: Protected Person Information
 question: |
-  Provide identifying information about yourself. 
+  Provide some basic information about yourself.
 subquestion: |
   This helps the court understand who you are, contact you if needed, and review your request for a protection order.
 fields:
@@ -616,15 +619,15 @@ code: |
 ---
 id: Plaintiff Contact Information
 question: |
-  ${ protected_person_name }, would you like to keep your address confidential on court documents?
+ Do you want to ask the Tribal Judge to keep your address confidential?
 subquestion: |
-  The court still needs to know your address to process your case. If you request to keep it confidential on public documents, you will need to provide a different mailing address where you can safely receive court communications.
+  If you're worried about safety, you can ask the Tribal Judge to keep your address confidential. This means you're asking the Tribal Court not to share your address with the other party or the public, they'll still need your address to process your case.
 fields:
-  - "Choose one": address_privacy_choice
+  - "Select one": address_privacy_choice
     datatype: radio
     choices:
-      - "Use my residential address as my mailing address": use_residential
-      - "Keep my residential address confidential and provide a different mailing address": confidential_and_different
+      - "No, I don't need to ask for my address to be kept confidential.": use_residential
+      - "Yes, I want to ask to keep my address confidential.": confidential_and_different
 ---
 code: |
   if address_privacy_choice == "use_residential":
@@ -634,31 +637,9 @@ code: |
     is_confidential_address = True
     is_providing_legal_mailing_address = True
 ---
-id: Petitioner Mailing Address
-question: |
-  Mailing Address
-subquestion: |
-  Provide the mailing address for ${ protected_person_name }.
-fields:
-  - "Phone Number": plaintiffs[0].phone_number
-    required: False
-  - code: |
-      plaintiffs[0].address_fields()
----
-id: Petitioner Confidential Address
-question: |
-  Confidential Contact Address
-subquestion: |
-  If ${ protected_person_name } is keeping an address confidential, you must provide a confidential contact.
-fields:
-  - "Phone Number": confidential[0].phone_number
-    required: False
-  - code: |
-      confidential[0].address_fields()
----
 id: confidential_name
 question: |
-  Provide the name of your confidential contact.
+  When asking to keep your address confidential, you must choose someone to be your Confidential Contact.
 fields:
   - First name: confidential[0].name.first
   - Middle name: confidential[0].name.middle
@@ -668,11 +649,22 @@ fields:
     required: False
     code: name_suffix()
 ---
+id: Petitioner Confidential Address
+question: |
+  Provide your Confidential Contact's phone number and address.
+subquestion: |
+ 
+fields:
+  - "Phone Number": confidential[0].phone_number
+    required: False
+  - code: |
+      confidential[0].address_fields()
+---
 id: Plaintiff Address and Contact Information
 question: |
-  Contact Information
+  What's your address?
 subquestion: |
-  Provide the address and contact information for ${ protected_person_name }.
+  Provide the address where you currently live.
 fields:
   - code: |
       protected[0].address_fields()
@@ -690,9 +682,9 @@ code: |
 ---
 id: Defendant Identifying Information
 question: |
-  Identifying Information
+  The following questions ask for information about ${ defendants[0].name.full() }.
 subquestion: |
-  Provide identifying information for the defendant.  This will help the court and law enforcement identify them for service and any enforcement action if the order is granted.
+  This information can help with service, enforcement, and officer safety. You may not know every answer, that's okay. Answer what you can and leave blank anything you don't know.
 fields:
   - "Nickname": defendants[0].nickname
     required: False
@@ -772,9 +764,9 @@ code: |
 ---
 id: Plaintiff Need for an Interpreter
 question: |
-  Does ${ protected_person_name } require an interpreter?
+  Do you need an interpreter?
 fields:
-  - "Do you require an interpreter?": is_protected_need_interpreter
+  - "Select": is_protected_need_interpreter
     datatype: yesnoradio
   - "Language": protected[0].language
     required: False
@@ -790,9 +782,9 @@ code: |
 ---
 id: Defendant Need for an Interpreter
 question: |
-  Does this person require an interpreter?
+  Do you believe ${ defendants[0].name.full() } will need an interpreter?
 fields:
-  - "Does the Defendant require an interpreter?": is_defendant_need_interpreter
+  - "Select": is_defendant_need_interpreter
     datatype: yesnoradio
   - "Language": defendants[0].language
     required: False
@@ -808,9 +800,9 @@ code: |
 ---
 id: Related Case Any
 question: |
-  Related Cases
+   Are there any related cases the Tribal Court should be aware of?
 subquestion: |
-  Are there any other court cases or other restraining, protection, or no contact orders involving ${ protected_person_name } and/or the defendant related to this order?  Be prepared to provided details such as case numbers.  This helps the court understand overlapping matters and helps avoid people trying different courts for the same issue.  It is okay if you do not know of any.
+  This can include court cases or other restraining, protection, or no contact orders involving ${ protected_person_name } and/or ${ defendants[0].name.full() }?  Be prepared to provided details such as case numbers.  This helps the court understand overlapping matters and helps avoid people trying different courts for the same issue.  It's okay if you don't know of any.
 yesno: cases.there_are_any
 ---
 id: Related Cases
@@ -830,9 +822,9 @@ list collect: True
 ---
 id: Order Specifications
 question: |
-  Order Specifications: Contact
+  Select the manners of communication you wish to prevent ${ defendants[0].name.full() } from having with you.
 subquestion: |
-  Select the manners of communication you wish to prevent the defendant from having with ${ protected_person_name }
+  
 fields:
   - "Any attempt at surveillance, including cyber and electronic surveillance that includes e-mail, text messaging, and any other social media networking sites (e.g. Facebook, X (formerly Twitter), Instagram, TikTok, etc.)": is_restrained_from_online
     datatype: yesno
@@ -841,9 +833,9 @@ fields:
 ---
 id: Order Specifications Locations
 question: |
-  Order Specifications: Locations
+   What location(s) do you want to ask the Tribal Court Judge to order ${ defendants[0].name.full() } to stay away from?
 subquestion: |
-  Select the locations from which the defendant should be restrained in order to protect ${ protected_person_name }.  This is important for the temporary order, but may later change at the hearing.
+  This is important for the temporary order, but may later change at the hearing.
 fields:
   - "Workplace": is_restrained_workplace
     datatype: yesno
@@ -908,19 +900,19 @@ id: Statement Under Oath
 question: |
   Statement Under Oath
 subquestion: |
-  Describe specific acts of harassment and their approximate dates if possible, beginning with the most recent act. You may want to include Police Responses/Reports:
+  Describe specific acts of harassment and their approximate dates, beginning with the most recent act. You may want to include any law enforcement responses or reports:
 fields:
-  - "The Defendant has committed acts of Unlawful Harassment as follows:": statement_1
+  - "${ defendants[0].name.full() } has committed acts of harassment as follows:": statement_1
     input type: area
     rows: 20
   - "Date of Statement": statement_date
     datatype: date
 ---
-id: Defendant Vehicle Information
+id: ${ defendants[0].name.full() } Vehicle Information
 question: |
-  Vehicle Information
+  Provide ${ defendants[0].name.full() }'s related vehicle information. 
 subquestion: |
-  Provide information about the defendant's driver's license and vehicle, if known.
+  If you don't know what vehicle ${ defendants[0].name.full() } drives or their driver's license information that's okay.
 fields:
   - "Driver's License Number": defendants[0].driver_license_number
     required: False
@@ -936,9 +928,9 @@ fields:
 ---
 id: Defendant Employment
 question: |
-  Employment
+  Where does ${ defendants[0].name.full() } work?
 subquestion: |
-  Provide information about where the defendant works, if known.  This information will help the court understand where the parties may come into contact.
+  Provide any information related to where and when they may work, if known.
 fields:
   - "Defendant's Employer": defendant_employer
     required: False
@@ -951,13 +943,13 @@ fields:
 ---
 id: Restrained Person Impairment
 question: |
-  Impairment
+  Does ${ defendants[0].name.full() } have a disability or any impairments you're aware of?
 subquestion: |
-  Indicate whether the defendant has any known impairment.
+  
 fields:
-  - "Is the defendant impaired?": impaired
+  - "Select": impaired
     datatype: yesnoradio
-  - "Describe disability or impairment": disability_or_injury_description
+  - "Describe to the best of your ability": disability_or_injury_description
     input type: area
     show if:
       variable: impaired
@@ -973,9 +965,9 @@ code: |
 ---
 id: Hazard Information
 question: |
-  Hazard Information
+  Do you know if ${ defendants[0].name.full() } has faced any of these issues?
 subquestion: |
-  This information will help law enforcement to safely interact with the defendant.  Select all that apply to the defendant’s history.
+  This information can help law enforcement stay safe when serving court papers or enforcing an order. Select any that apply. Leave this blank if you don't know.
 fields:
   - "Assault": is_assault
     datatype: yesno
@@ -992,9 +984,9 @@ fields:
 ---
 id: Weapon Possession
 question: |
-  Weapon Possession
+  What weapons, if any, does ${ defendants[0].name.full() } possess?
 subquestion: |
-  This information will help law enforcement to safely interact with the defendant.  Indicate any weapon that the restrained person possesses:
+  Indicating any weapons you're aware of ${ defendants[0].name.full() } possessing helps law enforcement stay safe when serving court papers or enforcing an order. If you don't know that's okay.
 fields:
   - "Rifles": has_rifles
     datatype: yesno
@@ -1009,9 +1001,9 @@ fields:
 ---
 id: Location of Weapons
 question: |
-  Location of Weapons
+  Do you know the location of the weapon(s)?
 subquestion: |
-  Indicate any weapon that the defendant possesses, if known.
+  
 fields:
   - "Vehicle": is_vehicle
     datatype: yesno
@@ -1019,22 +1011,22 @@ fields:
     datatype: yesno
   - "On Person": is_on_person
     datatype: yesno
-  - "Describe any weapons and their locations in detail": weapon_location_description
+  - "Describe any details you remember": weapon_location_description
     required: False
 ---
 id: Current Status Cohabitation
 question: |
-  Current Status
+  Provide information about ${ defendants[0].name.full() }'s awareness of this petition.
 subquestion: |
-  Provide information about the defendant’s awareness of this petition.
+  
 fields:
-  - "Does the defendant know you’re trying to get this order?": order_aware
+  - "Do you believe ${ defendants[0].name.full() } knows you’re trying to get this order?": order_aware
     datatype: radio
     choices:
       - "Yes": "Yes"
       - "No": "No"
       - "N/A": "NA"
-  - "Is the defendant likely to react violently when served?": violent
+  - "Do you believe ${ defendants[0].name.full() } will likely react violently when served?": violent
     datatype: radio
     choices:
       - "Yes": "Yes"
@@ -1070,17 +1062,17 @@ code: |
 ---
 id: Current Status Cohabitation
 question: |
-  Cohabitation
+  Is ${ defendants[0].name.full() } a current or former intimate partner of yours?
 subquestion: |
-  Is the defendant a a current or former intimate partner?
+ 
 fields:
-  - "Is the defendant a current or former cohabitant as an intimate partner?": cohabitant
+  - "Select": cohabitant
     datatype: radio
     choices:
       - "Yes": "Yes"
       - "No": "No"
       - "N/A": "NA"
-  - "Are you and the defendant currently living together?": current
+  - "Are you and ${ defendants[0].name.full() } currently living together?": current
     datatype: radio
     show if:
       variable: cohabitant
@@ -1089,7 +1081,7 @@ fields:
       - "Yes": "Yes"
       - "No": "No"
       - "N/A": "NA"
-  - "Does the defendant know he or she may be moved out of the home?": moved
+  - "Does ${ defendants[0].name.full() } know they may be moved out of the home?": moved
     datatype: radio
     show if:
       variable: current
@@ -1265,7 +1257,7 @@ review:
       ${ word(yesno(has_rifles)) }
   - Edit: is_plaintiff_member_of_other_tribe
     button: |
-      **I am a member of a Federally recognized Indian Tribe**:
+      **I'm a member of a Federally recognized Indian Tribe**:
       ${ word(yesno(is_plaintiff_member_of_other_tribe)) }
   - Edit: is_not_living_together
     button: |
@@ -1273,7 +1265,7 @@ review:
       ${ word(yesno(is_not_living_together)) }
   - Edit: is_events_on_reservation
     button: |
-      **The "'Unlawful Harassment" took place within the boundaries of the MWT Reservation**:
+      **The harassment took place within the boundaries of the MWT Reservation**:
       ${ word(yesno(is_events_on_reservation)) }
   - Edit: is_assault_with_weapons
     button: |
@@ -1357,7 +1349,7 @@ review:
       ${ word(yesno(is_defendant_aware_not_applicable)) }
   - Edit: is_plaintiff
     button: |
-      **I am the plaintiff**:
+      **I'm the plaintiff**:
       ${ word(yesno(is_plaintiff)) }
   - Edit: is_not_intimate
     button: |
@@ -1369,7 +1361,7 @@ review:
       ${ protected[0].eye_color }
   - Edit: is_plaintiff_member_of_mashpee
     button: |
-      **I am a member of the Mashpee Wampanoag Tribe.**:
+      **I'm a member of the Mashpee Wampanoag Tribe.**:
       ${ word(yesno(is_plaintiff_member_of_mashpee)) }
   - Edit: tribal_number
     button: |
@@ -1401,7 +1393,7 @@ review:
       ${ minor[0].protected_relationship }
   - Edit: is_victim_of_harassment
     button: |
-      **I am the victim of 'Unlawful Harassment” committed by Defendant. as described in the statement**:
+      **I'm the victim of harassment committed by Defendant. as described in the statement**:
       ${ word(yesno(is_victim_of_harassment)) }
   - Edit: is_together_not_applicable
     button: |
@@ -1469,7 +1461,7 @@ review:
       ${other_tribal_number}
   - Edit: statement_1
     button: |
-      **The Defendant has committed acts of "Unlawful Harassment" as follows. (Describe specific acts of harassment and their approximate dates, beginning with the most recent act. You may want to include Police Responses/Reports)**:
+      **The Defendant has committed acts of harassment as follows. (Describe specific acts of harassment and their approximate dates, beginning with the most recent act. You may want to include any law enforcement responses or reports)**:
       > ${ single_paragraph(statement_1) }
   - Edit: plaintiffs.revisit
     button: |
@@ -1552,7 +1544,7 @@ review:
       ${ word(yesno(is_unlawful_harassment)) }
   - Edit: is_guardian_of_victim
     button: |
-      **I am the parent or guardian, family member or household member of child(ren) under the age of 18 or vulnerable adult and seek to restrain a person age 18 years of age or over from contact with child(ren) or vulnerable adult because contact is detrimental, as described in the statement below**:
+      **I'm the parent or guardian, family member or household member of child(ren) under the age of 18 or vulnerable adult and seek to restrain a person age 18 years of age or over from contact with child(ren) or vulnerable adult because contact is detrimental, as described in the statement below**:
       ${ word(yesno(is_guardian_of_victim)) }
   - Edit: is_involuntary_voluntary_commitment
     button: |
