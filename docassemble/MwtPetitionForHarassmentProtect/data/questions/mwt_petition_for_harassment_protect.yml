@@ -1,4 +1,4 @@
-is_defendant_need_interpreteinclude:
+include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALAnyState:any_state.yml
   - docassemble.MWTTheme:main.yml
@@ -795,7 +795,7 @@ fields:
 code: |
   if is_defendant_need_interpreter:
     is_defendant_not_need_interpreter = False
-  elif not is_defendant_need_interpreter:
+  if not is_defendant_need_interpreter:
     is_defendant_not_need_interpreter = True
 ---
 id: Related Case Any
@@ -1789,6 +1789,3 @@ attachment:
   skip undefined: True
   docx template file: mwt_petition_for_harassment_protect.docx
   tagged pdf: True
-
-
-
